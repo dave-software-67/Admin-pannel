@@ -244,7 +244,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
     <button class="nav-card red" onclick="showPanel('reports')"><div class="icon-wrap"><i class="fas fa-flag"></i></div><div class="label">Reports</div><div class="sub" id="subReports">0 pending</div></button>
     <button class="nav-card purple" onclick="showPanel('products')"><div class="icon-wrap"><i class="fas fa-box"></i></div><div class="label">Products</div><div class="sub" id="subProducts">0 listed</div></button>
     <button class="nav-card green" onclick="showPanel('payments')"><div class="icon-wrap"><i class="fas fa-money-bill-wave"></i></div><div class="label">Payments</div><div class="sub">Transactions</div></button>
-    <button class="nav-card orange" onclick="showPanel('ai')"><div class="icon-wrap"><i class="fas fa-robot"></i></div><div class="label">Admin AI</div><div class="sub">Chat + commands</div></button>
+    <button class="nav-card orange" onclick="showPanel('ai')"><div class="icon-wrap"><i class="fas fa-robot"></i></div><div class="label">Admin AI</div><div class="sub">Commands</div></button>
     <button class="nav-card slate" onclick="showPanel('deleted')"><div class="icon-wrap"><i class="fas fa-user-slash"></i></div><div class="label">Deleted</div><div class="sub" id="subDeleted">0 users</div></button>
     <button class="nav-card blue2" onclick="showPanel('inbox')"><div class="icon-wrap"><i class="fas fa-inbox"></i></div><div class="label">Inbox</div><div class="sub" id="subInbox">0 broadcasts</div></button>
     <button class="nav-card teal" onclick="showPanel('dms')"><div class="icon-wrap"><i class="fas fa-comments"></i></div><div class="label">DMs</div><div class="sub" id="subDMs">0 chats</div></button>
@@ -288,10 +288,10 @@ button:active { transform: scale(0.95); opacity: 0.88; }
     <div class="panel-box">
       <h2><i class="fas fa-robot" style="color:#ff6b00;"></i> Admin AI</h2>
       <div class="chat-messages" id="aiMessages" style="height:380px;border-radius:12px;background:#f5f7fa;">
-        <div class="bubble admin" style="background:#fff;color:#1e2a3a;align-self:flex-start;border-bottom-left-radius:4px;">Hi Admin! I can chat with you or run commands like /ban_email, /gift_vip_email, /delete_email, /wipe_email</div>
+        <div class="bubble admin" style="background:#fff;color:#1e2a3a;align-self:flex-start;border-bottom-left-radius:4px;">Try commands: /ban_email, /unban_email, /delete_email, /undelete_email, /wipe_email, /gift_vip_email, /gift_100_boosts_email</div>
       </div>
       <div class="chat-input-bar" style="margin-top:10px;border-radius:14px;">
-        <input id="aiInput" placeholder="Type message or command..." onkeydown="if(event.key==='Enter')sendAI()">
+        <input id="aiInput" placeholder="Type command..." onkeydown="if(event.key==='Enter')sendAI()">
         <button class="chat-send-btn" style="background:#1e2a3a;" onclick="sendAI()">Send</button>
       </div>
     </div>
@@ -427,6 +427,7 @@ let currentUserId = null, currentUserEmail = null, currentUserName = null;
 let giftType = null, giftValue = null, banAction = null;
 let currentBroadcastTitle = '';
 let pendingDeleteIds = { inbox: [], dms: [] };
+let chatPollRef = null;
 
 const BOOST_PACKS = [20, 40, 60, 80, 100, 150, 200, 250, 300];
 const SUB_PACKS = [
@@ -478,7 +479,7 @@ async function loadAll() {
     dms = Array.isArray(dm) ? dm : [];
     payments = Array.isArray(pay) ? pay : [];
     renderAll();
-  } catch (e) { toast('Failed to load data'); }
+  } catch (e) { toast('Failed to load'); }
 }
 function doRefresh() {
   const btn = document.getElementById('refreshBtn');
@@ -511,8 +512,8 @@ function renderUsers() {
   if (!users.length) { el.innerHTML = '<div class="empty">No users yet</div>'; return; }
   el.innerHTML = users.map((u, i) => {
     const initial = (u.name || u.email).charAt(0).toUpperCase();
-    const statusLabel = u.status ? u.status.charAt(0).toUpperCase() + u.status.slice(1) : 'Active';
     const status = u.status || 'active';
+    const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
     const plan = u.plan || 'free';
     return '<div class="user-row">' +
       '<div class="user-avatar">' + initial + '</div>' +
@@ -578,7 +579,7 @@ function renderDeleted() {
 
 function renderInbox() {
   const el = document.getElementById('inboxList');
-  if (!broadcasts.length) { el.innerHTML = '<div class="empty">No broadcasts yet</div>'; return; }
+  if (!broadcasts.length) { el.innerHTML = '<div class="empty">No broadcasts yet. Tap ⋮ → Message to send one.</div>'; return; }
   el.innerHTML = broadcasts.map(b => {
     const dt = b.created_at ? new Date(b.created_at).toLocaleString() : '';
     return '<div class="dm-row" onclick="openBroadcastView(' + b.id + ')">' +
@@ -591,13 +592,13 @@ function renderInbox() {
 
 function renderDMs() {
   const el = document.getElementById('dmsList');
-  if (!dms.length && !users.length) { el.innerHTML = '<div class="empty">No users</div>'; return; }
   const seen = {};
   const combined = [];
   dms.forEach(d => { seen[d.user_email] = true; combined.push(d); });
   users.forEach(u => {
     if (!seen[u.email]) combined.push({ user_email: u.email, last_body: 'Tap to message', last_sender: 'system', last_at: null, name: u.name });
   });
+  if (!combined.length) { el.innerHTML = '<div class="empty">No users yet</div>'; return; }
   el.innerHTML = combined.map(d => {
     const user = users.find(u => u.email === d.user_email);
     const name = d.name || (user && user.name) || d.user_email.split('@')[0];
@@ -730,14 +731,14 @@ function chooseBanAction(action) {
   document.getElementById('ban-ban-card').classList.toggle('selected', action === 'ban');
   document.getElementById('banOptionsWrap').style.display = 'block';
   document.getElementById('daysInputWrap').style.display = action === 'suspend' ? 'block' : 'none';
-  const btn = document.getElementById('(BbanConfirmBtn');
-  if (action === 'suspend') { btn.className = 'btn-big orange'; btn.innerHTML = '<i class="fas faACK-clock"></i> Confirm Suspend'; }
-  else { btn.className = 'btn-big red'; btn.innerHTML = '<i class="fas fa-banEND"></i> Confirm Ban'; }
+  const btn = document.getElementById('banConfirmBtn');
+  if (action === 'suspend') { btn.className = 'btn-big orange'; btn.innerHTML = '<i class="fas fa-clock"></i> Confirm Suspend'; }
+  else { btn.className = 'btn-big red'; btn.innerHTML = '<i class="fas fa-ban"></i> Confirm Ban'; }
 }
 async function confirmBanAction() {
-  if (!banAction) { toast('Choose an action'); return_URL; }
+  if (!banAction) { toast('Choose an action'); return; }
   const u = users[currentUserId];
-  const body = banAction === 'suspend' ? { email: u.email, status: 's +uspended', days: parseInt(document.getElementById('suspendDays').value) || 7 } : { email: u.email, status: 'banned '/' };
+  const body = banAction === 'suspend' ? { email: u.email, status: 'suspended', days: parseInt(document.getElementById('suspendDays').value) || 7 } : { email: u.email, status: 'banned' };
   try {
     const res = await fetch(BACKEND_URL + '/admin/ban-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json());
     if (res.success) toast('✅ Updated');
@@ -747,19 +748,11 @@ async function confirmBanAction() {
 }
 async function removeStatus() {
   const u = users[currentUserId];
-  await fetchadmin/ban-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email, status: 'active' }) });
+  await fetch(BACKEND_URL + '/admin/ban-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email, status: 'active' }) });
   toast('✅ Status removed'); closeModal('userModal'); loadAll();
 }
-function openBanByEmail(email) {
-  const idx = users.findIndex(u => u.email === email);
-  if (idx === -1) { toast('User not found'); return; }
-  openBan(idx);
-}
-function openDeleteByEmail(email) {
-  const idx = users.findIndex(u => u.email === email);
-  if (idx === -1) { toast('User not found'); return; }
-  confirmDeleteUser(idx);
-}
+function openBanByEmail(email) { const idx = users.findIndex(u => u.email === email); if (idx === -1) { toast('User not found'); return; } openBan(idx); }
+function openDeleteByEmail(email) { const idx = users.findIndex(u => u.email === email); if (idx === -1) { toast('User not found'); return; } confirmDeleteUser(idx); }
 
 function confirmDeleteUser(i) {
   const u = users[i];
@@ -828,6 +821,7 @@ async function doDeleteProduct(id) {
   } catch (e) { toast('Network error'); }
 }
 
+// ===== USER CHAT =====
 async function openUserChat(email) {
   currentUserEmail = email;
   const user = users.find(u => u.email === email);
@@ -840,35 +834,50 @@ async function openUserChat(email) {
   document.getElementById('chatStatus').textContent = email;
   document.getElementById('chatInput').placeholder = 'Reply to ' + currentUserName + '...';
   await loadChat(email);
+  if (chatPollRef) clearInterval(chatPollRef);
+  chatPollRef = setInterval(() => { if (currentUserEmail) loadChat(currentUserEmail); }, 4000);
 }
 async function loadChat(email) {
   try {
     const msgs = await fetch(BACKEND_URL + '/dm/' + encodeURIComponent(email)).then(r => r.json());
     const box = document.getElementById('chatMessages');
     if (!msgs || !msgs.length) { box.innerHTML = '<div class="empty" style="color:#94a3b8;">No messages yet. Send the first one!</div>'; return; }
-    box.innerHTML = msgs.map(m => {
+    const html = msgs.map(m => {
       const dt = m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
       const side = m.sender === 'admin' ? 'admin' : 'user';
       return '<div class="bubble ' + side + '">' + (m.body || '').replace(/</g, '&lt;') + '<div class="bubble-time">' + dt + '</div></div>';
     }).join('');
-    box.scrollTop = box.scrollHeight;
+    if (box.innerHTML !== html) {
+      box.innerHTML = html;
+      box.scrollTop = box.scrollHeight;
+    }
   } catch (e) {}
 }
 async function sendMsg() {
   const input = document.getElementById('chatInput');
   const text = input.value.trim();
   if (!text) return;
+  // Show instantly
+  const box = document.getElementById('chatMessages');
+  if (box.querySelector('.empty')) box.innerHTML = '';
+  const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  box.innerHTML += '<div class="bubble admin">' + text.replace(/</g, '&lt;') + '<div class="bubble-time">' + now + '</div></div>';
+  box.scrollTop = box.scrollHeight;
+  input.value = '';
   try {
     await fetch(BACKEND_URL + '/dm/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ user_email: currentUserEmail, sender: 'admin', body: text }) });
-    input.value = '';
-    await loadChat(currentUserEmail);
+    loadAll();
+    setTimeout(() => loadChat(currentUserEmail), 300);
   } catch (e) { toast('Failed to send'); }
 }
 function closeChat() {
+  if (chatPollRef) { clearInterval(chatPollRef); chatPollRef = null; }
+  currentUserEmail = null;
   document.getElementById('chatPage').classList.remove('active');
   document.getElementById('adminContainer').style.display = 'block';
 }
 
+// ===== BROADCAST =====
 function openBroadcast() {
   document.getElementById('adminContainer').style.display = 'none';
   document.getElementById('chatPage').classList.remove('active');
@@ -894,12 +903,20 @@ async function sendBroadcast() {
   const input = document.getElementById('broadcastInput');
   const text = input.value.trim();
   if (!text) return;
+  const title = currentBroadcastTitle || 'Broadcast';
+  // Show instantly in chat view
+  const msgs = document.getElementById('broadcastMessages');
+  if (msgs.querySelector('.empty')) msgs.innerHTML = '';
+  const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  msgs.innerHTML += '<div class="bubble admin" style="background:#3b82f6;color:#fff;">📢 ' + text.replace(/</g, '&lt;') + '<div class="bubble-time">Sent · ' + now + '</div></div>';
+  msgs.scrollTop = msgs.scrollHeight;
+  input.value = '';
   try {
-    await fetch(BACKEND_URL + '/admin/send-broadcast', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: currentBroadcastTitle || 'Broadcast', body: text }) });
-    toast('📢 Broadcast sent');
+    const res = await fetch(BACKEND_URL + '/admin/send-broadcast', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title, body: text }) }).then(r => r.json());
+    if (res.success) toast('📢 Broadcast sent to all users');
+    else toast('❌ ' + (res.error || 'Failed'));
     currentBroadcastTitle = '';
-    closeBroadcast();
-    loadAll();
+    await loadAll();
   } catch (e) { toast('Failed to send'); }
 }
 function openBroadcastView(id) {
@@ -913,6 +930,7 @@ function openBroadcastView(id) {
   document.getElementById('broadcastMessages').innerHTML = '<div class="bubble admin" style="max-width:90%;background:#3b82f6;color:#fff;align-self:flex-start;border-bottom-left-radius:4px;">📢 ' + (b.body || '').replace(/</g, '&lt;') + '<div class="bubble-time">' + (b.created_at ? new Date(b.created_at).toLocaleString() : '') + '</div></div>';
 }
 
+// ===== DELETE MODE =====
 function toggleDeleteMode(which) {
   deleteMode[which] = !deleteMode[which];
   const list = document.getElementById(which === 'dms' ? 'dmsList' : 'inboxList');
@@ -957,6 +975,7 @@ async function deleteSelected(which) {
   } catch (e) { toast('Failed'); }
 }
 
+// ===== ADMIN AI =====
 async function sendAI() {
   const input = document.getElementById('aiInput');
   const text = input.value.trim();
@@ -976,6 +995,7 @@ async function sendAI() {
   }
 }
 
+// ===== SETTINGS =====
 function openChangePassword() { openModal('pwModal'); }
 function saveNewPassword() {
   const c = document.getElementById('cpCurrent').value;
@@ -993,7 +1013,7 @@ function saveNewPassword() {
 function confirmClearData() { openModal('clearModal'); }
 async function doClearData() {
   try {
-    await fetch(BACKEND_URL + '/admin/clear-data', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clear_payments: true, clear_chats: true }) });
+    await fetch(BACKEND_URL + '/admin/clear-data', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
     document.getElementById('aiMessages').innerHTML = '<div class="bubble admin" style="background:#fff;color:#1e2a3a;align-self:flex-start;border-bottom-left-radius:4px;">Admin AI ready.</div>';
     toast('🗑️ Cleared');
     closeModal('clearModal');
