@@ -45,6 +45,7 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
 .tab[data-color="green"].active { background: #16a34a; border-color: #16a34a; color: #fff; }
 .tab[data-color="yellow"].active { background: #1e2a3a; border-color: #1e2a3a; color: #fff; }
 .tab[data-color="grey"].active { background: #64748b; border-color: #64748b; color: #fff; }
+.tab[data-color="dark"].active { background: #1e2a3a; border-color: #1e2a3a; color: #fff; }
 .panel { display: none; }
 .panel.active { display: block; }
 .search-bar { background: #fff; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; border: 1px solid #e4e7ec; margin-bottom: 12px; }
@@ -62,6 +63,7 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
 .action-btn.view { background: #dbeafe; color: #1e2a3a; }
 .action-btn.unban { background: #dcfce7; color: #16a34a; }
 .action-btn.delete { background: #1e2a3a; color: #fff; }
+.action-btn.restore { background: #16a34a; color: #fff; }
 .badge-status { font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
 .badge-status.active { background: #dcfce7; color: #16a34a; }
 .badge-status.suspended { background: #fef3c7; color: #d97706; }
@@ -148,6 +150,7 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
     <div class="tab" data-color="red" data-panel="reports" onclick="switchTab(this)"><i class="fas fa-flag"></i> Reports</div>
     <div class="tab" data-color="green" data-panel="payments" onclick="switchTab(this)"><i class="fas fa-money-bill-wave"></i> Payments</div>
     <div class="tab" data-color="yellow" data-panel="ai" onclick="switchTab(this)"><i class="fas fa-robot"></i> Admin AI</div>
+    <div class="tab" data-color="dark" data-panel="deleted" onclick="switchTab(this)"><i class="fas fa-user-slash"></i> Deleted</div>
     <div class="tab" data-color="grey" data-panel="settings" onclick="switchTab(this)"><i class="fas fa-cog"></i> Settings</div>
   </div>
 
@@ -165,6 +168,11 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
     <div id="paymentsList"><div class="loading">Loading payments...</div></div>
   </div>
 
+  <div class="panel" id="panel-deleted">
+    <div class="search-bar"><i class="fas fa-search"></i><input type="text" placeholder="Search deleted..." oninput="renderDeleted(this.value)"></div>
+    <div id="deletedList"><div class="loading">Loading deleted accounts...</div></div>
+  </div>
+
   <div class="panel" id="panel-ai">
     <div style="background:#fff;border-radius:20px;overflow:hidden;border:1px solid #e4e7ec;display:flex;flex-direction:column;height:70vh;max-height:620px;">
       <div style="background:#1e2a3a;color:#fff;padding:16px 18px;display:flex;align-items:center;gap:12px;">
@@ -172,7 +180,7 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
         <div><h3 style="font-size:16px;font-weight:800;">Admin AI</h3><p style="font-size:11px;opacity:0.8;">Commands + questions</p></div>
       </div>
       <div id="aiMessages" style="flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;background:#f5f7fa;">
-        <div style="background:#e2e8f0;color:#1e2a3a;font-size:12px;align-self:center;text-align:center;border-radius:8px;padding:8px 14px;">Admin AI ready. Try: /ban_email@x.com · /gift_vip_email@x.com · /gift_100_boosts_email@x.com</div>
+        <div style="background:#e2e8f0;color:#1e2a3a;font-size:12px;align-self:center;text-align:center;border-radius:8px;padding:8px 14px;">Admin AI ready. Try: /ban_email · /gift_vip_email · /delete_email · /undelete_email</div>
       </div>
       <div style="display:flex;gap:8px;padding:12px;border-top:1px solid #e4e7ec;background:#fff;">
         <input type="text" id="aiInput" placeholder="Type command..." onkeydown="if(event.key==='Enter')sendAdminAI()" style="flex:1;padding:12px 16px;border-radius:24px;border:1.5px solid #e4e7ec;font-size:14px;outline:none;">
@@ -183,7 +191,7 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
 
   <div class="panel" id="panel-settings">
     <div class="list-item"><i class="fas fa-key" style="font-size:20px;color:#1e2a3a;"></i><div class="info"><h4>Change admin password</h4><p>Update your login password</p></div><button class="action-btn" style="background:#e2e8f0;color:#1e2a3a;width:auto;padding:8px 16px;border-radius:40px;font-size:12px;font-weight:700;" onclick="openChangePassword()">Change</button></div>
-    <div class="list-item"><i class="fas fa-trash" style="font-size:20px;color:#ef4444;"></i><div class="info"><h4>Clear AI chat</h4><p>Reset the Admin AI conversation</p></div><button class="action-btn" style="background:#fee2e2;color:#dc2626;width:auto;padding:8px 16px;border-radius:40px;font-size:12px;font-weight:700;" onclick="clearAdminAI()">Clear</button></div>
+    <div class="list-item"><i class="fas fa-broom" style="font-size:20px;color:#ef4444;"></i><div class="info"><h4>Clear payments + AI chats</h4><p>Wipes payment records and Admin AI chat history</p></div><button class="action-btn" style="background:#fee2e2;color:#dc2626;width:auto;padding:8px 16px;border-radius:40px;font-size:12px;font-weight:700;" onclick="openClearData()">Clear</button></div>
   </div>
 </div>
 
@@ -193,11 +201,7 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
 <script>
 const BACKEND_URL = "https://lenidi-backend.onrender.com";
 let ADMIN_PASSWORD = localStorage.getItem('lenidi_admin_pw') || "Cr@zyMonkey2";
-let users = [];
-let reports = [];
-let payments = [];
-let products = [];
-
+let users = [], reports = [], payments = [], products = [], deletedUsers = [];
 const BOOST_PACKS = [20, 40, 60, 80, 100, 150, 200, 250, 300];
 const SUB_PACKS = [
   { id: 'plus', name: 'Plus', price: 'GHC 99', boosts: 50 },
@@ -215,12 +219,8 @@ function doLogin() {
     loadRealData();
     if (window._adminRefresh) clearInterval(window._adminRefresh);
     window._adminRefresh = setInterval(loadRealData, 10000);
-  } else {
-    toast('Wrong password', 'error');
-    document.getElementById('pwInput').value = '';
-  }
+  } else { toast('Wrong password', 'error'); document.getElementById('pwInput').value = ''; }
 }
-
 function doLogout() {
   if (window._adminRefresh) clearInterval(window._adminRefresh);
   document.getElementById('loginScreen').style.display = 'flex';
@@ -228,53 +228,37 @@ function doLogout() {
   document.getElementById('adminContainer').style.display = 'none';
   document.getElementById('pwInput').value = '';
 }
-
 async function loadRealData() {
   try {
-    const [u, r, p, pr] = await Promise.all([
+    const [u, r, p, pr, du] = await Promise.all([
       fetch(BACKEND_URL + '/admin/users').then(x => x.json()).catch(() => []),
       fetch(BACKEND_URL + '/admin/reports').then(x => x.json()).catch(() => []),
       fetch(BACKEND_URL + '/admin/payments').then(x => x.json()).catch(() => []),
-      fetch(BACKEND_URL + '/products').then(x => x.json()).catch(() => [])
+      fetch(BACKEND_URL + '/products').then(x => x.json()).catch(() => []),
+      fetch(BACKEND_URL + '/admin/deleted-users').then(x => x.json()).catch(() => [])
     ]);
     users = Array.isArray(u) ? u : [];
     reports = Array.isArray(r) ? r : [];
     payments = Array.isArray(p) ? p : [];
     products = Array.isArray(pr) ? pr : [];
+    deletedUsers = Array.isArray(du) ? du : [];
     renderAll();
   } catch (e) { toast('Failed to load', 'error'); }
 }
-
 function doRefresh() {
   const btn = document.getElementById('refreshBtn');
   btn.classList.add('spinning');
-  loadRealData().then(() => {
-    btn.classList.remove('spinning');
-    toast('✅ Refreshed', 'success');
-  });
+  loadRealData().then(() => { btn.classList.remove('spinning'); toast('✅ Refreshed', 'success'); });
 }
-
 function renderAll() {
   document.getElementById('statUsers').textContent = users.length;
   document.getElementById('statReports').textContent = reports.length;
   document.getElementById('statProducts').textContent = products.length;
   document.getElementById('statRevenue').textContent = formatRevenue(calculateRevenue());
-  renderUsers();
-  renderReports();
-  renderPayments();
+  renderUsers(); renderReports(); renderPayments(); renderDeleted();
 }
-
-function calculateRevenue() {
-  let total = 0;
-  payments.forEach(p => { if (p.status === 'paid' && p.amount) total += Number(p.amount); });
-  return total;
-}
-
-function formatRevenue(a) {
-  if (a >= 1000) return 'GH₵' + (a / 1000).toFixed(1) + 'K';
-  return 'GH₵' + a;
-}
-
+function calculateRevenue() { let total = 0; payments.forEach(p => { if (p.status === 'paid' && p.amount) total += Number(p.amount); }); return total; }
+function formatRevenue(a) { if (a >= 1000) return 'GH₵' + (a / 1000).toFixed(1) + 'K'; return 'GH₵' + a; }
 function switchTab(el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
@@ -306,21 +290,26 @@ function renderUsers(search) {
   }).join('');
 }
 
+function renderDeleted(search) {
+  const list = document.getElementById('deletedList');
+  const filtered = search ? deletedUsers.filter(u => ((u.name||'')+' '+(u.email||'')).toLowerCase().includes(search.toLowerCase())) : deletedUsers;
+  if (!filtered.length) { list.innerHTML = '<div class="loading">No deleted accounts</div>'; return; }
+  list.innerHTML = filtered.map(u => {
+    const name = u.name || u.email || 'User';
+    const initials = name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+    const deletedDate = u.deleted_at ? new Date(u.deleted_at).toLocaleString() : 'Unknown';
+    return '<div class="list-item" style="background:#f8fafc;"><div class="avatar" style="background:#64748b;">' + initials + '</div><div class="info"><h4>' + (u.name||'User') + ' <span class="badge-status deleted">Deleted</span></h4><p>' + (u.email||'') + ' · Deleted ' + deletedDate + '</p></div><div class="actions"><button class="action-btn restore" onclick="openRestoreModal(\'' + u.email + '\')" title="Restore"><i class="fas fa-undo"></i></button></div></div>';
+  }).join('');
+}
+
 function renderReports() {
   const list = document.getElementById('reportsList');
   if (!reports.length) { list.innerHTML = '<div class="loading">No reports 🎉</div>'; return; }
   list.innerHTML = reports.map(r => {
     const banBtn = '<button class="action-btn ban" onclick="openBanModal(\'' + (r.reported_email||'') + '\')" title="Ban/Suspend"><i class="fas fa-ban"></i></button>';
-    const delBtn = '<button class="action-btn delete" onclick="openDeleteModal(\'' + (r.reported_email||'') + '\')" title="Delete user"><i class="fas fa-trash"></i></button>';
+    const delBtn = '<button class="action-btn delete" onclick="openDeleteModal(\'' + (r.reported_email||'') + '\')" title="Delete"><i class="fas fa-trash"></i></button>';
     const date = r.created_at ? new Date(r.created_at).toLocaleString() : '';
-    return '<div class="list-item" style="background:#fef2f2;border-color:#fecaca;display:block;">' +
-      '<div style="display:flex;align-items:center;gap:12px;"><div class="avatar" style="background:#ef4444;"><i class="fas fa-flag"></i></div>' +
-      '<div class="info" style="flex:1;"><h4>Report against ' + (r.reported_email||'?') + '</h4>' +
-      '<p>By: ' + (r.reporter_email||'?') + ' · ' + date + '</p></div>' +
-      '<div class="actions">' + banBtn + delBtn + '</div></div>' +
-      '<div class="reason-box"><div class="reason-label">Reason</div><div class="reason-text">' + (r.reason || 'No reason given') + '</div></div>' +
-      (r.details ? '<div class="reason-box" style="background:#fff7ed;border-left-color:#ff6b00;margin-top:6px;"><div class="reason-label" style="color:#c2410c;">Details</div><div class="reason-text">' + r.details + '</div></div>' : '') +
-    '</div>';
+    return '<div class="list-item" style="background:#fef2f2;border-color:#fecaca;display:block;"><div style="display:flex;align-items:center;gap:12px;"><div class="avatar" style="background:#ef4444;"><i class="fas fa-flag"></i></div><div class="info" style="flex:1;"><h4>Report against ' + (r.reported_email||'?') + '</h4><p>By: ' + (r.reporter_email||'?') + ' · ' + date + '</p></div><div class="actions">' + banBtn + delBtn + '</div></div><div class="reason-box"><div class="reason-label">Reason</div><div class="reason-text">' + (r.reason || 'No reason given') + '</div></div>' + (r.details ? '<div class="reason-box" style="background:#fff7ed;border-left-color:#ff6b00;margin-top:6px;"><div class="reason-label" style="color:#c2410c;">Details</div><div class="reason-text">' + r.details + '</div></div>' : '') + '</div>';
   }).join('');
 }
 
@@ -338,8 +327,7 @@ function renderPayments(search) {
 function openGiftModal(email) {
   const user = users.find(u => u.email === email);
   const name = user ? (user.name || email) : email;
-  document.getElementById('modalBox').innerHTML =
-    '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
+  document.getElementById('modalBox').innerHTML = '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
     '<div class="modal-header"><div class="modal-icon" style="background:#dcfce7;color:#16a34a;"><i class="fas fa-gift"></i></div><div><h3>Gift to ' + name + '</h3><p>' + email + '</p></div></div>' +
     '<label>What to gift?</label>' +
     '<div class="choice-grid">' +
@@ -355,39 +343,31 @@ function openGiftModal(email) {
   window._giftValue = null;
   openModal();
 }
-
 function selectGiftType(type) {
   document.getElementById('choice-boosts').classList.toggle('selected', type === 'boosts');
   document.getElementById('choice-sub').classList.toggle('selected', type === 'sub');
   window._giftValue = null;
   document.getElementById('giftOptions').style.display = 'block';
   const list = document.getElementById('giftPackList');
-  if (type === 'boosts') {
-    list.innerHTML = BOOST_PACKS.map(n => '<div class="pack-option" onclick="selectPack(this, ' + n + ', \'boost\')"><div class="p-name">' + n + ' boosts</div><div class="p-price">Select</div></div>').join('');
-  } else {
-    list.innerHTML = SUB_PACKS.map(p => '<div class="pack-option" onclick="selectPack(this, \'' + p.id + '\', \'sub\')"><div class="p-name">' + p.name + '</div><div class="p-price">' + p.price + '</div></div>').join('');
-  }
+  if (type === 'boosts') list.innerHTML = BOOST_PACKS.map(n => '<div class="pack-option" onclick="selectPack(this, ' + n + ', \'boost\')"><div class="p-name">' + n + ' boosts</div><div class="p-price">Select</div></div>').join('');
+  else list.innerHTML = SUB_PACKS.map(p => '<div class="pack-option" onclick="selectPack(this, \'' + p.id + '\', \'sub\')"><div class="p-name">' + p.name + '</div><div class="p-price">' + p.price + '</div></div>').join('');
 }
-
-function selectPack(el, value, kind) {
-  el.parentElement.querySelectorAll('.pack-option').forEach(p => p.classList.remove('selected'));
+function selectuserPack(el, value, kind) {
+  el.parentElement.querySelectorAll('.pack-option').forEach(p => p.classList.name ||.remove('selected'));
   el.classList.add('selected');
-  window._giftValue = { value: value, kind: kind };
+  window._giftValue = { email value: value, kind: kind };
 }
-
 async function confirmGift(email) {
-  if (!window._giftValue) { toast('Select a pack first', 'error'); return; }
-  const val = window._giftValue;
+  if (!window._g)iftValue) { toast('Select a pack first', 'error'); return; }
+  const val = window :._giftValue;
   try {
     let res;
     if (val.kind === 'boost') {
       res = await fetch(BACKEND_URL + '/admin/add-boosts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, amount: val.value }) }).then(r => r.json());
-      if (res.success) toast('✅ Gifted ' + val.value + ' boosts', 'success');
-      else toast('❌ ' + (res.error || 'Failed'), 'error');
+      if (res.success) toast('✅ Gifted ' + val.value + ' boosts', 'success'); else toast('❌ ' + (res.error || 'Failed'), 'error');
     } else {
       res = await fetch(BACKEND_URL + '/admin/gift-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, plan: val.value }) }).then(r => r.json());
-      if (res.success) toast('✅ Gifted ' + val.value.toUpperCase(), 'success');
-      else toast('❌ ' + (res.error || 'Failed'), 'error');
+      if (res.success) toast('✅ Gifted ' + val.value.toUpperCase(), 'success'); else toast('❌ ' + (res.error || 'Failed'), 'error');
     }
     closeModal();
     loadRealData();
@@ -396,10 +376,9 @@ async function confirmGift(email) {
 
 function openBanModal(email) {
   const user = users.find(u => u.email === email);
-  const name = user ? (user.name || email) : email;
+  const name = user ? ( email;
   const status = user ? (user.status || 'active') : 'active';
-  document.getElementById('modalBox').innerHTML =
-    '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
+  document.getElementById('modalBox').innerHTML = '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
     '<div class="modal-header"><div class="modal-icon" style="background:#fee2e2;color:#dc2626;"><i class="fas fa-ban"></i></div><div><h3>Manage ' + name + '</h3><p>' + email + ' · Current: ' + status + '</p></div></div>' +
     '<label>Choose action</label>' +
     '<div class="choice-grid">' +
@@ -415,7 +394,6 @@ function openBanModal(email) {
   window._banAction = null;
   openModal();
 }
-
 function selectBanAction(action) {
   document.getElementById('choice-suspend').classList.toggle('selected', action === 'suspend');
   document.getElementById('choice-ban').classList.toggle('selected', action === 'ban');
@@ -426,22 +404,15 @@ function selectBanAction(action) {
   btn.innerHTML = action === 'suspend' ? '<i class="fas fa-clock"></i> Confirm Suspend' : '<i class="fas fa-ban"></i> Confirm Ban';
   btn.style.background = action === 'suspend' ? '#d97706' : '#ef4444';
 }
-
 async function confirmBanAction(email) {
   if (!window._banAction) { toast('Select an action', 'error'); return; }
-  const body = window._banAction === 'suspend'
-    ? { email: email, status: 'suspended', days: parseInt(document.getElementById('suspendDays').value) || 7 }
-    : { email: email, status: 'banned' };
+  const body = window._banAction === 'suspend' ? { email: email, status: 'suspended', days: parseInt(document.getElementById('suspendDays').value) || 7 } : { email: email, status: 'banned' };
   try {
     const res = await fetch(BACKEND_URL + '/admin/ban-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json());
-    if (res.success) {
-      toast('✅ ' + (window._banAction === 'suspend' ? 'Suspended' : 'Banned') + ' ' + email, 'success');
-      closeModal();
-      loadRealData();
-    } else { toast('❌ ' + (res.error || 'Failed'), 'error'); }
+    if (res.success) { toast('✅ ' + (window._banAction === 'suspend' ? 'Suspended' : 'Banned') + ' ' + email, 'success'); closeModal(); loadRealData(); }
+    else { toast('❌ ' + (res.error || 'Failed'), 'error'); }
   } catch (e) { toast('Network error', 'error'); }
 }
-
 async function quickUnban(email) {
   try {
     const res = await fetch(BACKEND_URL + '/admin/ban-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, status: 'active' }) }).then(r => r.json());
@@ -449,29 +420,45 @@ async function quickUnban(email) {
   } catch (e) { toast('Network error', 'error'); }
 }
 
-// ✅ DELETE USER
+// DELETE USER
 function openDeleteModal(email) {
   const user = users.find(u => u.email === email);
   const name = user ? (user.name || email) : email;
-  document.getElementById('modalBox').innerHTML =
-    '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
+  document.getElementById('modalBox').innerHTML = '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
     '<div class="modal-header"><div class="modal-icon" style="background:#fee2e2;color:#dc2626;"><i class="fas fa-trash"></i></div><div><h3>Delete ' + name + '?</h3><p>' + email + '</p></div></div>' +
-    '<p style="font-size:14px;color:#5e6f7e;line-height:1.6;margin-bottom:20px;">This will permanently mark the account as deleted and remove all their products. The user will be told their account has been deleted.</p>' +
+    '<p style="font-size:14px;color:#5e6f7e;line-height:1.6;margin-bottom:20px;">This will permanently mark the account as deleted and remove all their products. You can restore it later from the Deleted tab.</p>' +
     '<div style="display:flex;gap:10px;">' +
       '<button class="btn-modal-secondary" style="flex:1;margin-top:0;" onclick="closeModal()">NO</button>' +
       '<button class="btn-modal-danger" style="flex:1;margin-top:0;" onclick="confirmDeleteUser(\'' + email + '\')">YES, DELETE</button>' +
     '</div>';
   openModal();
 }
-
 async function confirmDeleteUser(email) {
   try {
     const res = await fetch(BACKEND_URL + '/admin/delete-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) }).then(r => r.json());
-    if (res.success) {
-      toast('🗑️ Deleted ' + email, 'success');
-      closeModal();
-      loadRealData();
-    } else { toast('❌ ' + (res.error || 'Failed'), 'error'); }
+    if (res.success) { toast('🗑️ Deleted ' + email, 'success'); closeModal(); loadRealData(); }
+    else { toast('❌ ' + (res.error || 'Failed'), 'error'); }
+  } catch (e) { toast('Network error', 'error'); }
+}
+
+// RESTORE USER
+function openRestoreModal(email) {
+  const user = deletedUsers.find(u => u.email === email) || users.find(u => u.email === email);
+  const name = user ? (user.name || email) : email;
+  document.getElementById('modalBox').innerHTML = '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
+    '<div class="modal-header"><div class="modal-icon" style="background:#dcfce7;color:#16a34a;"><i class="fas fa-undo"></i></div><div><h3>Restore ' + name + '?</h3><p>' + email + '</p></div></div>' +
+    '<p style="font-size:14px;color:#5e6f7e;line-height:1.6;margin-bottom:20px;">This will bring the account back online. The user will be able to use the app again.</p>' +
+    '<div style="display:flex;gap:10px;">' +
+      '<button class="btn-modal-secondary" style="flex:1;margin-top:0;" onclick="closeModal()">NO</button>' +
+      '<button class="btn-modal-success" style="flex:1;margin-top:0;" onclick="confirmRestoreUser(\'' + email + '\')">YES, RESTORE</button>' +
+    '</div>';
+  openModal();
+}
+async function confirmRestoreUser(email) {
+  try {
+    const res = await fetch(BACKEND_URL + '/admin/restore-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) }).then(r => r.json());
+    if (res.success) { toast('✅ Restored ' + email, 'success'); closeModal(); loadRealData(); }
+    else { toast('❌ ' + (res.error || 'Failed'), 'error'); }
   } catch (e) { toast('Network error', 'error'); }
 }
 
@@ -485,13 +472,8 @@ function openUserDetail(email) {
   const statusBadge = status === 'active' ? '<span class="badge-status active">Active</span>' : (status === 'suspended' ? '<span class="badge-status suspended">Suspended (' + (user.suspend_days||'?') + 'd)</span>' : (status === 'deleted' ? '<span class="badge-status deleted">Deleted</span>' : '<span class="badge-status banned">Banned</span>'));
   const planBadge = '<span class="badge-plan ' + plan + '">' + plan.toUpperCase() + '</span>';
   const userProducts = products.filter(p => p.seller_email === email);
-  document.getElementById('modalBox').innerHTML =
-    '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
-    '<div class="user-detail-header">' +
-      '<div class="user-detail-avatar">' + initials + '</div>' +
-      '<h2>' + name + ' ' + planBadge + '</h2>' +
-      '<p>' + statusBadge + '</p>' +
-    '</div>' +
+  document.getElementById('modalBox').innerHTML = '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
+    '<div class="user-detail-header"><div class="user-detail-avatar">' + initials + '</div><h2>' + name + ' ' + planBadge + '</h2><p>' + statusBadge + '</p></div>' +
     '<div class="detail-row"><span class="label">Email</span><span class="value">' + (user.email||'—') + '</span></div>' +
     '<div class="detail-row"><span class="label">Phone</span><span class="value">' + (user.phone||'—') + '</span></div>' +
     '<div class="detail-row"><span class="label">Boosts</span><span class="value">' + (user.boosts||0) + '</span></div>' +
@@ -509,17 +491,15 @@ function openUserDetail(email) {
 }
 
 function openChangePassword() {
-  document.getElementById('modalBox').innerHTML =
-    '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
+  document.getElementById('modalBox').innerHTML = '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
     '<div class="modal-header"><div class="modal-icon" style="background:#e2e8f0;color:#1e2a3a;"><i class="fas fa-key"></i></div><div><h3>Change Password</h3><p>Set a new admin password</p></div></div>' +
-    '<div class="form-group"><label>Current password</label><input type="password" id="cpCurrent" placeholder="Current password"></div>' +
-    '<div class="form-group"><label>New password</label><input type="password" id="cpNew" placeholder="New password"></div>' +
-    '<div class="form-group"><label>Confirm new password</label><input type="password" id="cpConfirm" placeholder="Confirm new password"></div>' +
+    '<div class="form-group"><label>Current password</label><input type="password" id="cpCurrent"></div>' +
+    '<div class="form-group"><label>New password</label><input type="password" id="cpNew"></div>' +
+    '<div class="form-group"><label>Confirm new password</label><input type="password" id="cpConfirm"></div>' +
     '<button class="btn-modal-primary" onclick="saveNewPassword()"><i class="fas fa-check"></i> Update Password</button>' +
     '<button class="btn-modal-secondary" onclick="closeModal()">Cancel</button>';
   openModal();
 }
-
 function saveNewPassword() {
   const current = document.getElementById('cpCurrent').value;
   const newPw = document.getElementById('cpNew').value;
@@ -534,11 +514,33 @@ function saveNewPassword() {
   setTimeout(() => doLogout(), 1200);
 }
 
-function clearAdminAI() {
-  document.getElementById('aiMessages').innerHTML = '<div style="background:#e2e8f0;color:#1e2a3a;font-size:12px;align-self:center;text-align:center;border-radius:8px;padding:8px 14px;">Admin AI ready. Try: /ban_email@x.com · /gift_vip_email@x.com</div>';
-  toast('AI chat cleared', 'success');
+// CLEAR DATA
+function openClearData() {
+  document.getElementById('modalBox').innerHTML = '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
+    '<div class="modal-header"><div class="modal-icon" style="background:#fee2e2;color:#dc2626;"><i class="fas fa-broom"></i></div><div><h3>Clear data?</h3><p>This cannot be undone</p></div></div>' +
+    '<p style="font-size:14px;color:#5e6f7e;line-height:1.6;margin-bottom:16px;">This will permanently clear:</p>' +
+    '<ul style="font-size:14px;color:#5e6f7e;line-height:1.8;margin-bottom:20px;padding-left:20px;">' +
+      '<li>All <b>payments</b> records</li>' +
+      '<li>All <b>Admin AI</b> chat messages</li>' +
+    '</ul>' +
+    '<p style="font-size:13px;color:#94a3b8;margin-bottom:20px;">Users, products, and reports will <b>NOT</b> be affected.</p>' +
+    '<div style="display:flex;gap:10px;">' +
+      '<button class="btn-modal-secondary" style="flex:1;margin-top:0;" onclick="closeModal()">NO</button>' +
+      '<button class="btn-modal-danger" style="flex:1;margin-top:0;" onclick="confirmClearData()">YES, CLEAR</button>' +
+    '</div>';
+  openModal();
+}
+async function confirmClearData() {
+  try {
+    await fetch(BACKEND_URL + '/admin/clear-data', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clear_payments: true, clear_chats: true }) });
+    document.getElementById('aiMessages').innerHTML = '<div style="background:#e2e8f0;color:#1e2a3a;font-size:12px;align-self:center;text-align:center;border-radius:8px;padding:8px 14px;">Admin AI ready.</div>';
+    toast('✅ Payments and AI chats cleared', 'success');
+    closeModal();
+    loadRealData();
+  } catch (e) { toast('Network error', 'error'); }
 }
 
+// ADMIN AI
 async function sendAdminAI() {
   const input = document.getElementById('aiInput');
   const text = input.value.trim();
@@ -563,6 +565,11 @@ async function sendAdminAI() {
       const email = text.replace('/delete_','').trim().toLowerCase();
       const res = await fetch(BACKEND_URL + '/admin/delete-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) }).then(r => r.json());
       reply = res.success ? '🗑️ Deleted ' + email : '❌ ' + (res.error || 'Failed');
+      loadRealData();
+    } else if (text.startsWith('/undelete_') || text.startsWith('/restore_')) {
+      const email = text.replace('/undelete_','').replace('/restore_','').trim().toLowerCase();
+      const res = await fetch(BACKEND_URL + '/admin/restore-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) }).then(r => r.json());
+      reply = res.success ? '✅ Restored ' + email : '❌ ' + (res.error || 'Failed');
       loadRealData();
     } else if (text.startsWith('/gift_vip_')) {
       const email = text.replace('/gift_vip_','').trim().toLowerCase();
@@ -592,11 +599,11 @@ async function sendAdminAI() {
       reply = res.success ? '✅ Gifted ' + amount + ' boosts to ' + email : '❌ ' + (res.error || 'Failed');
       loadRealData();
     } else if (text.toLowerCase().includes('users')) {
-      reply = '👥 Total users: ' + users.length + ' · Banned: ' + users.filter(u => u.status === 'banned').length + ' · Suspended: ' + users.filter(u => u.status === 'suspended').length;
+      reply = '👥 Total: ' + users.length + ' · Banned: ' + users.filter(u => u.status === 'banned').length + ' · Deleted: ' + deletedUsers.length;
     } else if (text.toLowerCase().includes('revenue')) {
       reply = '💰 Total revenue: GH₵' + calculateRevenue().toLocaleString();
     } else {
-      reply = 'Try: /ban_email@x.com · /unban_email@x.com · /delete_email@x.com · /gift_vip_email@x.com · /gift_100_boosts_email@x.com';
+      reply = 'Try: /ban_email · /unban_email · /delete_email · /undelete_email · /gift_vip_email · /gift_100_boosts_email';
     }
   } catch (e) { reply = '⚠️ Error: ' + e.message; }
   msgs.innerHTML += '<div style="background:#fff;align-self:flex-start;padding:10px 14px;border-radius:14px;font-size:13px;max-width:78%;box-shadow:0 1px 4px rgba(0,0,0,0.05);">' + reply + '</div>';
@@ -606,7 +613,6 @@ async function sendAdminAI() {
 function openModal() { document.getElementById('modalOverlay').classList.add('show'); }
 function closeModal() { document.getElementById('modalOverlay').classList.remove('show'); }
 document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-
 function toast(msg, type) {
   const t = document.getElementById('toast');
   t.textContent = msg;
