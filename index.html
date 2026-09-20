@@ -188,7 +188,11 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
 <script>
 const BACKEND_URL = "https://lenidi-backend.onrender.com";
 let ADMIN_PASSWORD = localStorage.getItem('lenidi_admin_pw') || "Cr@zyMonkey2";
-let users = [], reports = [], payments = [], products = [];
+let users = [];
+let reports = [];
+let payments = [];
+let products = [];
+
 const BOOST_PACKS = [20, 40, 60, 80, 100, 150, 200, 250, 300];
 const SUB_PACKS = [
   { id: 'plus', name: 'Plus', price: 'GHC 99', boosts: 50 },
@@ -205,7 +209,7 @@ function doLogin() {
     document.getElementById('adminContainer').style.display = 'block';
     loadRealData();
     if (window._adminRefresh) clearInterval(window._adminRefresh);
-    window._adminRefresh = setInterval(loadRealData, 30000);
+    window._adminRefresh = setInterval(loadRealData, 10000);
   } else {
     toast('Wrong password', 'error');
     document.getElementById('pwInput').value = '';
@@ -284,11 +288,11 @@ function renderUsers(search) {
     const plan = u.plan || 'free';
     const statusBadge = status === 'active' ? '<span class="badge-status active">Active</span>' : (status === 'suspended' ? '<span class="badge-status suspended">Suspended</span>' : '<span class="badge-status banned">Banned</span>');
     const planBadge = '<span class="badge-plan ' + plan + '">' + plan.toUpperCase() + '</span>';
-    const giftBtn = '<button class="action-btn gift" onclick="openGiftModal(\'' + u.email + '\')"><i class="fas fa-gift"></i></button>';
+    const giftBtn = '<button class="action-btn gift" onclick="openGiftModal(\'' + u.email + '\')" title="Gift"><i class="fas fa-gift"></i></button>';
     const statusBtn = status === 'active'
-      ? '<button class="action-btn ban" onclick="openBanModal(\'' + u.email + '\')"><i class="fas fa-ban"></i></button>'
-      : '<button class="action-btn unban" onclick="quickUnban(\'' + u.email + '\')"><i class="fas fa-check"></i></button>';
-    const viewBtn = '<button class="action-btn view" onclick="openUserDetail(\'' + u.email + '\')"><i class="fas fa-eye"></i></button>';
+      ? '<button class="action-btn ban" onclick="openBanModal(\'' + u.email + '\')" title="Ban/Suspend"><i class="fas fa-ban"></i></button>'
+      : '<button class="action-btn unban" onclick="quickUnban(\'' + u.email + '\')" title="Unban"><i class="fas fa-check"></i></button>';
+    const viewBtn = '<button class="action-btn view" onclick="openUserDetail(\'' + u.email + '\')" title="View"><i class="fas fa-eye"></i></button>';
     return '<div class="list-item"><div class="avatar">' + initials + '</div><div class="info"><h4>' + (u.name||'User') + ' ' + planBadge + ' ' + statusBadge + '</h4><p>' + (u.email||'') + ' · ' + (u.phone||'no phone') + ' · ' + (u.boosts||0) + ' boosts</p></div><div class="actions">' + giftBtn + statusBtn + viewBtn + '</div></div>';
   }).join('');
 }
@@ -297,7 +301,7 @@ function renderReports() {
   const list = document.getElementById('reportsList');
   if (!reports.length) { list.innerHTML = '<div class="loading">No reports 🎉</div>'; return; }
   list.innerHTML = reports.map(r => {
-    const banBtn = '<button class="action-btn ban" onclick="openBanModal(\'' + (r.reported_email||'') + '\')"><i class="fas fa-ban"></i></button>';
+    const banBtn = '<button class="action-btn ban" onclick="openBanModal(\'' + (r.reported_email||'') + '\')" title="Ban/Suspend"><i class="fas fa-ban"></i></button>';
     const date = r.created_at ? new Date(r.created_at).toLocaleString() : '';
     return '<div class="list-item" style="background:#fef2f2;border-color:#fecaca;"><div class="avatar" style="background:#ef4444;"><i class="fas fa-flag"></i></div><div class="info"><h4>Report against ' + (r.reported_email||'?') + '</h4><p>By: ' + (r.reporter_email||'?') + ' · ' + (r.reason||'no reason') + ' · ' + date + '</p></div><div class="actions">' + banBtn + '</div></div>';
   }).join('');
