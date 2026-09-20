@@ -244,7 +244,6 @@ button:active { transform: scale(0.95); opacity: 0.88; }
     <button class="nav-card red" onclick="showPanel('reports')"><div class="icon-wrap"><i class="fas fa-flag"></i></div><div class="label">Reports</div><div class="sub" id="subReports">0 pending</div></button>
     <button class="nav-card purple" onclick="showPanel('products')"><div class="icon-wrap"><i class="fas fa-box"></i></div><div class="label">Products</div><div class="sub" id="subProducts">0 listed</div></button>
     <button class="nav-card green" onclick="showPanel('payments')"><div class="icon-wrap"><i class="fas fa-money-bill-wave"></i></div><div class="label">Payments</div><div class="sub">Transactions</div></button>
-    <button class="nav-card orange" onclick="showPanel('ai')"><div class="icon-wrap"><i class="fas fa-robot"></i></div><div class="label">Admin AI</div><div class="sub">Commands</div></button>
     <button class="nav-card slate" onclick="showPanel('deleted')"><div class="icon-wrap"><i class="fas fa-user-slash"></i></div><div class="label">Deleted</div><div class="sub" id="subDeleted">0 users</div></button>
     <button class="nav-card blue2" onclick="showPanel('inbox')"><div class="icon-wrap"><i class="fas fa-inbox"></i></div><div class="label">Inbox</div><div class="sub" id="subInbox">0 broadcasts</div></button>
     <button class="nav-card teal" onclick="showPanel('dms')"><div class="icon-wrap"><i class="fas fa-comments"></i></div><div class="label">DMs</div><div class="sub" id="subDMs">0 chats</div></button>
@@ -280,20 +279,6 @@ button:active { transform: scale(0.95); opacity: 0.88; }
     <div class="panel-box">
       <h2><i class="fas fa-money-bill-wave" style="color:#16a34a;"></i> Payments</h2>
       <div id="paymentsList"><div class="loading">Loading payments...</div></div>
-    </div>
-  </div>
-
-  <div class="panel" id="panel-ai">
-    <button class="panel-back" onclick="showGrid()"><i class="fas fa-arrow-left"></i> Back</button>
-    <div class="panel-box">
-      <h2><i class="fas fa-robot" style="color:#ff6b00;"></i> Admin AI</h2>
-      <div class="chat-messages" id="aiMessages" style="height:380px;border-radius:12px;background:#f5f7fa;">
-        <div class="bubble admin" style="background:#fff;color:#1e2a3a;align-self:flex-start;border-bottom-left-radius:4px;">Try commands: /ban_email, /unban_email, /delete_email, /undelete_email, /wipe_email, /gift_vip_email, /gift_100_boosts_email</div>
-      </div>
-      <div class="chat-input-bar" style="margin-top:10px;border-radius:14px;">
-        <input id="aiInput" placeholder="Type command..." onkeydown="if(event.key==='Enter')sendAI()">
-        <button class="chat-send-btn" style="background:#1e2a3a;" onclick="sendAI()">Send</button>
-      </div>
     </div>
   </div>
 
@@ -350,7 +335,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
       </div>
       <div class="user-row">
         <div class="user-avatar" style="background:#ef4444;"><i class="fas fa-broom"></i></div>
-        <div class="user-info"><h4>Clear payments + AI chats</h4><p>Wipe payment records and AI history</p></div>
+        <div class="user-info"><h4>Clear payments</h4><p>Wipe payment records</p></div>
         <button class="mini-btn wipe" style="width:auto;padding:8px 16px;border-radius:40px;font-weight:700;" onclick="confirmClearData()">Clear</button>
       </div>
     </div>
@@ -401,8 +386,8 @@ button:active { transform: scale(0.95); opacity: 0.88; }
   <button class="btn-big blue" onclick="saveTitle()">Save</button>
 </div></div>
 <div class="modal-overlay" id="clearModal"><div class="modal-box">
-  <h3 style="font-size:22px;font-weight:800;margin-bottom:6px;">Clear data?</h3>
-  <p style="font-size:13px;color:#7f8c8d;margin-bottom:16px;">Wipes payment records + AI chat history. Users, products, reports not touched.</p>
+  <h3 style="font-size:22px;font-weight:800;margin-bottom:6px;">Clear payments?</h3>
+  <p style="font-size:13px;color:#7f8c8d;margin-bottom:16px;">Wipes payment records. Users, products, reports not touched.</p>
   <button class="btn-big grey" onclick="closeModal('clearModal')">No</button>
   <button class="btn-big red" onclick="doClearData()">Yes, clear</button>
 </div></div>
@@ -844,7 +829,7 @@ async function loadChat(email) {
     if (!msgs || !msgs.length) { box.innerHTML = '<div class="empty" style="color:#94a3b8;">No messages yet. Send the first one!</div>'; return; }
     const html = msgs.map(m => {
       const dt = m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-      const side = m.sender === 'admin' ? 'admin' : 'user';
+      const side = (m.sender || '').toLowerCase() === 'admin' ? 'admin' : 'user';
       return '<div class="bubble ' + side + '">' + (m.body || '').replace(/</g, '&lt;') + '<div class="bubble-time">' + dt + '</div></div>';
     }).join('');
     if (box.innerHTML !== html) {
@@ -857,7 +842,6 @@ async function sendMsg() {
   const input = document.getElementById('chatInput');
   const text = input.value.trim();
   if (!text) return;
-  // Show instantly
   const box = document.getElementById('chatMessages');
   if (box.querySelector('.empty')) box.innerHTML = '';
   const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -904,7 +888,6 @@ async function sendBroadcast() {
   const text = input.value.trim();
   if (!text) return;
   const title = currentBroadcastTitle || 'Broadcast';
-  // Show instantly in chat view
   const msgs = document.getElementById('broadcastMessages');
   if (msgs.querySelector('.empty')) msgs.innerHTML = '';
   const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -975,26 +958,6 @@ async function deleteSelected(which) {
   } catch (e) { toast('Failed'); }
 }
 
-// ===== ADMIN AI =====
-async function sendAI() {
-  const input = document.getElementById('aiInput');
-  const text = input.value.trim();
-  if (!text) return;
-  const box = document.getElementById('aiMessages');
-  box.innerHTML += '<div class="bubble admin" style="background:#1e2a3a;color:#fff;align-self:flex-end;">' + text.replace(/</g, '&lt;') + '</div>';
-  input.value = '';
-  box.scrollTop = box.scrollHeight;
-  try {
-    const res = await fetch(BACKEND_URL + '/admin/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text }) }).then(r => r.json());
-    const reply = res.reply || 'No response';
-    box.innerHTML += '<div class="bubble admin" style="background:#fff;color:#1e2a3a;align-self:flex-start;border-bottom-left-radius:4px;">' + reply.replace(/</g, '&lt;') + '</div>';
-    box.scrollTop = box.scrollHeight;
-    if (res.type === 'command') loadAll();
-  } catch (e) {
-    box.innerHTML += '<div class="bubble admin" style="background:#fff;color:#1e2a3a;align-self:flex-start;border-bottom-left-radius:4px;">⚠️ Error</div>';
-  }
-}
-
 // ===== SETTINGS =====
 function openChangePassword() { openModal('pwModal'); }
 function saveNewPassword() {
@@ -1014,7 +977,6 @@ function confirmClearData() { openModal('clearModal'); }
 async function doClearData() {
   try {
     await fetch(BACKEND_URL + '/admin/clear-data', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
-    document.getElementById('aiMessages').innerHTML = '<div class="bubble admin" style="background:#fff;color:#1e2a3a;align-self:flex-start;border-bottom-left-radius:4px;">Admin AI ready.</div>';
     toast('🗑️ Cleared');
     closeModal('clearModal');
     loadAll();
