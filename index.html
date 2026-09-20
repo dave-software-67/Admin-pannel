@@ -61,10 +61,12 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
 .action-btn.ban { background: #fee2e2; color: #dc2626; }
 .action-btn.view { background: #dbeafe; color: #1e2a3a; }
 .action-btn.unban { background: #dcfce7; color: #16a34a; }
+.action-btn.delete { background: #1e2a3a; color: #fff; }
 .badge-status { font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
 .badge-status.active { background: #dcfce7; color: #16a34a; }
 .badge-status.suspended { background: #fef3c7; color: #d97706; }
 .badge-status.banned { background: #fee2e2; color: #dc2626; }
+.badge-status.deleted { background: #1e2a3a; color: #fff; }
 .badge-plan { font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 20px; background: #e2e8f0; color: #475569; text-transform: uppercase; }
 .badge-plan.plus { background: #fef9c3; color: #854d0e; }
 .badge-plan.pro { background: #ffedd5; color: #9a3412; }
@@ -105,6 +107,9 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
 .product-mini .p-img { width: 40px; height: 40px; border-radius: 8px; background: #eef1f5; display: flex; align-items: center; justify-content: center; color: #97a5b5; font-size: 16px; }
 .product-mini .p-info h5 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
 .product-mini .p-info p { font-size: 11px; color: #7f8c8d; }
+.reason-box { background: #fef2f2; border-left: 4px solid #ef4444; border-radius: 8px; padding: 10px 12px; margin-top: 8px; }
+.reason-box .reason-label { font-size: 10px; color: #b91c1c; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+.reason-box .reason-text { font-size: 13px; color: #1e2a3a; font-weight: 600; word-break: break-word; }
 .toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: #1e2a3a; color: #fff; padding: 12px 22px; border-radius: 60px; font-size: 13px; font-weight: 600; z-index: 9999; display: none; }
 .toast.show { display: block; }
 .loading { text-align: center; padding: 40px; color: #7f8c8d; font-size: 14px; }
@@ -286,14 +291,18 @@ function renderUsers(search) {
     const initials = name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
     const status = u.status || 'active';
     const plan = u.plan || 'free';
-    const statusBadge = status === 'active' ? '<span class="badge-status active">Active</span>' : (status === 'suspended' ? '<span class="badge-status suspended">Suspended</span>' : '<span class="badge-status banned">Banned</span>');
+    const statusBadge = status === 'active' ? '<span class="badge-status active">Active</span>'
+      : (status === 'suspended' ? '<span class="badge-status suspended">Suspended</span>'
+      : (status === 'deleted' ? '<span class="badge-status deleted">Deleted</span>'
+      : '<span class="badge-status banned">Banned</span>'));
     const planBadge = '<span class="badge-plan ' + plan + '">' + plan.toUpperCase() + '</span>';
     const giftBtn = '<button class="action-btn gift" onclick="openGiftModal(\'' + u.email + '\')" title="Gift"><i class="fas fa-gift"></i></button>';
     const statusBtn = status === 'active'
       ? '<button class="action-btn ban" onclick="openBanModal(\'' + u.email + '\')" title="Ban/Suspend"><i class="fas fa-ban"></i></button>'
       : '<button class="action-btn unban" onclick="quickUnban(\'' + u.email + '\')" title="Unban"><i class="fas fa-check"></i></button>';
     const viewBtn = '<button class="action-btn view" onclick="openUserDetail(\'' + u.email + '\')" title="View"><i class="fas fa-eye"></i></button>';
-    return '<div class="list-item"><div class="avatar">' + initials + '</div><div class="info"><h4>' + (u.name||'User') + ' ' + planBadge + ' ' + statusBadge + '</h4><p>' + (u.email||'') + ' · ' + (u.phone||'no phone') + ' · ' + (u.boosts||0) + ' boosts</p></div><div class="actions">' + giftBtn + statusBtn + viewBtn + '</div></div>';
+    const deleteBtn = '<button class="action-btn delete" onclick="openDeleteModal(\'' + u.email + '\')" title="Delete"><i class="fas fa-trash"></i></button>';
+    return '<div class="list-item"><div class="avatar">' + initials + '</div><div class="info"><h4>' + (u.name||'User') + ' ' + planBadge + ' ' + statusBadge + '</h4><p>' + (u.email||'') + ' · ' + (u.phone||'no phone') + ' · ' + (u.boosts||0) + ' boosts' + (u.referrals_count ? ' · ' + u.referrals_count + ' refs' : '') + '</p></div><div class="actions">' + giftBtn + statusBtn + viewBtn + deleteBtn + '</div></div>';
   }).join('');
 }
 
@@ -302,8 +311,16 @@ function renderReports() {
   if (!reports.length) { list.innerHTML = '<div class="loading">No reports 🎉</div>'; return; }
   list.innerHTML = reports.map(r => {
     const banBtn = '<button class="action-btn ban" onclick="openBanModal(\'' + (r.reported_email||'') + '\')" title="Ban/Suspend"><i class="fas fa-ban"></i></button>';
+    const delBtn = '<button class="action-btn delete" onclick="openDeleteModal(\'' + (r.reported_email||'') + '\')" title="Delete user"><i class="fas fa-trash"></i></button>';
     const date = r.created_at ? new Date(r.created_at).toLocaleString() : '';
-    return '<div class="list-item" style="background:#fef2f2;border-color:#fecaca;"><div class="avatar" style="background:#ef4444;"><i class="fas fa-flag"></i></div><div class="info"><h4>Report against ' + (r.reported_email||'?') + '</h4><p>By: ' + (r.reporter_email||'?') + ' · ' + (r.reason||'no reason') + ' · ' + date + '</p></div><div class="actions">' + banBtn + '</div></div>';
+    return '<div class="list-item" style="background:#fef2f2;border-color:#fecaca;display:block;">' +
+      '<div style="display:flex;align-items:center;gap:12px;"><div class="avatar" style="background:#ef4444;"><i class="fas fa-flag"></i></div>' +
+      '<div class="info" style="flex:1;"><h4>Report against ' + (r.reported_email||'?') + '</h4>' +
+      '<p>By: ' + (r.reporter_email||'?') + ' · ' + date + '</p></div>' +
+      '<div class="actions">' + banBtn + delBtn + '</div></div>' +
+      '<div class="reason-box"><div class="reason-label">Reason</div><div class="reason-text">' + (r.reason || 'No reason given') + '</div></div>' +
+      (r.details ? '<div class="reason-box" style="background:#fff7ed;border-left-color:#ff6b00;margin-top:6px;"><div class="reason-label" style="color:#c2410c;">Details</div><div class="reason-text">' + r.details + '</div></div>' : '') +
+    '</div>';
   }).join('');
 }
 
@@ -393,7 +410,7 @@ function openBanModal(email) {
       '<div id="daysInput" style="display:none;"><label>Days to suspend</label><input type="number" id="suspendDays" value="7" min="1" max="365"></div>' +
       '<button class="btn-modal-danger" onclick="confirmBanAction(\'' + email + '\')" id="confirmBanBtn"><i class="fas fa-ban"></i> Confirm</button>' +
     '</div>' +
-    (status !== 'active' ? '<button class="btn-modal-success" onclick="quickUnban(\'' + email + '\'); closeModal();"><i class="fas fa-check"></i> Remove ' + (status === 'banned' ? 'Ban' : 'Suspension') + '</button>' : '') +
+    (status !== 'active' ? '<button class="btn-modal-success" onclick="quickUnban(\'' + email + '\'); closeModal();"><i class="fas fa-check"></i> Remove ' + (status === 'banned' ? 'Ban' : (status === 'deleted' ? 'Deleted status' : 'Suspension')) + '</button>' : '') +
     '<button class="btn-modal-secondary" onclick="closeModal()">Cancel</button>';
   window._banAction = null;
   openModal();
@@ -432,6 +449,32 @@ async function quickUnban(email) {
   } catch (e) { toast('Network error', 'error'); }
 }
 
+// ✅ DELETE USER
+function openDeleteModal(email) {
+  const user = users.find(u => u.email === email);
+  const name = user ? (user.name || email) : email;
+  document.getElementById('modalBox').innerHTML =
+    '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
+    '<div class="modal-header"><div class="modal-icon" style="background:#fee2e2;color:#dc2626;"><i class="fas fa-trash"></i></div><div><h3>Delete ' + name + '?</h3><p>' + email + '</p></div></div>' +
+    '<p style="font-size:14px;color:#5e6f7e;line-height:1.6;margin-bottom:20px;">This will permanently mark the account as deleted and remove all their products. The user will be told their account has been deleted.</p>' +
+    '<div style="display:flex;gap:10px;">' +
+      '<button class="btn-modal-secondary" style="flex:1;margin-top:0;" onclick="closeModal()">NO</button>' +
+      '<button class="btn-modal-danger" style="flex:1;margin-top:0;" onclick="confirmDeleteUser(\'' + email + '\')">YES, DELETE</button>' +
+    '</div>';
+  openModal();
+}
+
+async function confirmDeleteUser(email) {
+  try {
+    const res = await fetch(BACKEND_URL + '/admin/delete-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) }).then(r => r.json());
+    if (res.success) {
+      toast('🗑️ Deleted ' + email, 'success');
+      closeModal();
+      loadRealData();
+    } else { toast('❌ ' + (res.error || 'Failed'), 'error'); }
+  } catch (e) { toast('Network error', 'error'); }
+}
+
 function openUserDetail(email) {
   const user = users.find(u => u.email === email);
   if (!user) return;
@@ -439,7 +482,7 @@ function openUserDetail(email) {
   const status = user.status || 'active';
   const plan = user.plan || 'free';
   const initials = name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
-  const statusBadge = status === 'active' ? '<span class="badge-status active">Active</span>' : (status === 'suspended' ? '<span class="badge-status suspended">Suspended (' + (user.suspend_days||'?') + 'd)</span>' : '<span class="badge-status banned">Banned</span>');
+  const statusBadge = status === 'active' ? '<span class="badge-status active">Active</span>' : (status === 'suspended' ? '<span class="badge-status suspended">Suspended (' + (user.suspend_days||'?') + 'd)</span>' : (status === 'deleted' ? '<span class="badge-status deleted">Deleted</span>' : '<span class="badge-status banned">Banned</span>'));
   const planBadge = '<span class="badge-plan ' + plan + '">' + plan.toUpperCase() + '</span>';
   const userProducts = products.filter(p => p.seller_email === email);
   document.getElementById('modalBox').innerHTML =
@@ -452,12 +495,15 @@ function openUserDetail(email) {
     '<div class="detail-row"><span class="label">Email</span><span class="value">' + (user.email||'—') + '</span></div>' +
     '<div class="detail-row"><span class="label">Phone</span><span class="value">' + (user.phone||'—') + '</span></div>' +
     '<div class="detail-row"><span class="label">Boosts</span><span class="value">' + (user.boosts||0) + '</span></div>' +
+    '<div class="detail-row"><span class="label">Referral code</span><span class="value">' + (user.referral_code||'—') + '</span></div>' +
+    '<div class="detail-row"><span class="label">Referrals</span><span class="value">' + (user.referrals_count||0) + '/100</span></div>' +
     '<div class="detail-row"><span class="label">Last active</span><span class="value">' + (user.last_active ? new Date(user.last_active).toLocaleString() : '—') + '</span></div>' +
     '<h4 style="margin-top:20px;margin-bottom:10px;font-size:14px;">Products (' + userProducts.length + ')</h4>' +
     '<div>' + (userProducts.length ? userProducts.map(p => '<div class="product-mini"><div class="p-img"><i class="fas fa-box"></i></div><div class="p-info"><h5>' + (p.title||'Product') + '</h5><p>' + (p.price||'') + '</p></div></div>').join('') : '<p style="color:#7f8c8d;font-size:13px;text-align:center;">No products</p>') + '</div>' +
-    '<div style="display:flex;gap:8px;margin-top:20px;">' +
+    '<div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;">' +
       '<button class="btn-modal-success" style="flex:1;" onclick="openGiftModal(\'' + email + '\')"><i class="fas fa-gift"></i> Gift</button>' +
       '<button class="btn-modal-danger" style="flex:1;" onclick="openBanModal(\'' + email + '\')"><i class="fas fa-ban"></i> Manage</button>' +
+      '<button class="btn-modal-danger" style="flex:1;background:#1e2a3a;" onclick="openDeleteModal(\'' + email + '\')"><i class="fas fa-trash"></i> Delete</button>' +
     '</div>';
   openModal();
 }
@@ -513,6 +559,11 @@ async function sendAdminAI() {
       const res = await fetch(BACKEND_URL + '/admin/ban-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, status: 'active' }) }).then(r => r.json());
       reply = res.success ? '✅ Unbanned ' + email : '❌ ' + (res.error || 'Failed');
       loadRealData();
+    } else if (text.startsWith('/delete_')) {
+      const email = text.replace('/delete_','').trim().toLowerCase();
+      const res = await fetch(BACKEND_URL + '/admin/delete-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) }).then(r => r.json());
+      reply = res.success ? '🗑️ Deleted ' + email : '❌ ' + (res.error || 'Failed');
+      loadRealData();
     } else if (text.startsWith('/gift_vip_')) {
       const email = text.replace('/gift_vip_','').trim().toLowerCase();
       const res = await fetch(BACKEND_URL + '/admin/gift-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, plan: 'vip' }) }).then(r => r.json());
@@ -545,7 +596,7 @@ async function sendAdminAI() {
     } else if (text.toLowerCase().includes('revenue')) {
       reply = '💰 Total revenue: GH₵' + calculateRevenue().toLocaleString();
     } else {
-      reply = 'Try: /ban_email@x.com · /unban_email@x.com · /gift_vip_email@x.com · /gift_100_boosts_email@x.com';
+      reply = 'Try: /ban_email@x.com · /unban_email@x.com · /delete_email@x.com · /gift_vip_email@x.com · /gift_100_boosts_email@x.com';
     }
   } catch (e) { reply = '⚠️ Error: ' + e.message; }
   msgs.innerHTML += '<div style="background:#fff;align-self:flex-start;padding:10px 14px;border-radius:14px;font-size:13px;max-width:78%;box-shadow:0 1px 4px rgba(0,0,0,0.05);">' + reply + '</div>';
