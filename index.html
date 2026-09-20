@@ -19,9 +19,9 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
 .login-box input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 15px; margin-bottom: 12px; outline: none; text-align: center; letter-spacing: 2px; }
 .login-box input:focus { border-color: #1e2a3a; }
 .login-box button { width: 100%; padding: 14px; border-radius: 60px; background: #1e2a3a; color: #fff; font-weight: 700; font-size: 15px; border: none; cursor: pointer; }
+.login-error { color: #ef4444; font-size: 12px; margin-top: 10px; min-height: 16px; }
 .admin-header { background: #1e2a3a; color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
 .admin-header .refresh-btn { background: rgba(255,255,255,0.15); color: #fff; border: none; padding: 8px 16px; border-radius: 40px; font-size: 12px; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-.admin-header .refresh-btn:active { background: rgba(255,255,255,0.3); }
 .admin-header .refresh-btn.spinning i { animation: spin 0.8s linear infinite; }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 .admin-header .title { flex: 1; text-align: center; font-size: 20px; font-weight: 800; letter-spacing: 1px; }
@@ -40,12 +40,7 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
 .tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
 .tab { background: #fff; border: 2px solid #e4e7ec; padding: 10px 18px; border-radius: 40px; font-size: 13px; font-weight: 700; color: #3a4b5c; white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-.tab[data-color="blue"].active { background: #1e2a3a; border-color: #1e2a3a; color: #fff; }
-.tab[data-color="red"].active { background: #ef4444; border-color: #ef4444; color: #fff; }
-.tab[data-color="green"].active { background: #16a34a; border-color: #16a34a; color: #fff; }
-.tab[data-color="yellow"].active { background: #1e2a3a; border-color: #1e2a3a; color: #fff; }
-.tab[data-color="grey"].active { background: #64748b; border-color: #64748b; color: #fff; }
-.tab[data-color="dark"].active { background: #1e2a3a; border-color: #1e2a3a; color: #fff; }
+.tab.active { background: #1e2a3a; border-color: #1e2a3a; color: #fff; }
 .panel { display: none; }
 .panel.active { display: block; }
 .search-bar { background: #fff; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; border: 1px solid #e4e7ec; margin-bottom: 12px; }
@@ -84,7 +79,7 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
 .modal-close { position: absolute; top: 14px; right: 14px; background: #f3f4f6; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 14px; color: #4b5563; }
 .modal-box .form-group { margin-bottom: 14px; }
 .modal-box label { display: block; font-size: 12px; font-weight: 700; color: #1e2a3a; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-.modal-box input, .modal-box select { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 14px; outline: none; background: #fafcff; font-family: inherit; }
+.modal-box input { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 14px; outline: none; background: #fafcff; font-family: inherit; }
 .btn-modal-primary { background: #1e2a3a; color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; cursor: pointer; margin-top: 6px; }
 .btn-modal-secondary { background: #f0f4f9; color: #1e2a3a; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; cursor: pointer; margin-top: 8px; }
 .btn-modal-danger { background: #ef4444; color: #fff; border: none; padding: 14px; border-radius: 60px; font-weight: 700; font-size: 15px; width: 100%; cursor: pointer; margin-top: 6px; }
@@ -126,8 +121,9 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
     <div class="subtitle">Admin Panel</div>
     <h2>Welcome back 👑</h2>
     <p>Enter your password to continue</p>
-    <input type="password" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
-    <button onclick="doLogin()">Log In</button>
+    <input type="password" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()">
+    <button type="button" onclick="doLogin()">Log In</button>
+    <div class="login-error" id="loginError"></div>
   </div>
 </div>
 
@@ -146,12 +142,12 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
   </div>
 
   <div class="tabs">
-    <div class="tab active" data-color="blue" data-panel="users" onclick="switchTab(this)"><i class="fas fa-users"></i> Users</div>
-    <div class="tab" data-color="red" data-panel="reports" onclick="switchTab(this)"><i class="fas fa-flag"></i> Reports</div>
-    <div class="tab" data-color="green" data-panel="payments" onclick="switchTab(this)"><i class="fas fa-money-bill-wave"></i> Payments</div>
-    <div class="tab" data-color="yellow" data-panel="ai" onclick="switchTab(this)"><i class="fas fa-robot"></i> Admin AI</div>
-    <div class="tab" data-color="dark" data-panel="deleted" onclick="switchTab(this)"><i class="fas fa-user-slash"></i> Deleted</div>
-    <div class="tab" data-color="grey" data-panel="settings" onclick="switchTab(this)"><i class="fas fa-cog"></i> Settings</div>
+    <div class="tab active" data-panel="users" onclick="switchTab(this)"><i class="fas fa-users"></i> Users</div>
+    <div class="tab" data-panel="reports" onclick="switchTab(this)"><i class="fas fa-flag"></i> Reports</div>
+    <div class="tab" data-panel="payments" onclick="switchTab(this)"><i class="fas fa-money-bill-wave"></i> Payments</div>
+    <div class="tab" data-panel="ai" onclick="switchTab(this)"><i class="fas fa-robot"></i> Admin AI</div>
+    <div class="tab" data-panel="deleted" onclick="switchTab(this)"><i class="fas fa-user-slash"></i> Deleted</div>
+    <div class="tab" data-panel="settings" onclick="switchTab(this)"><i class="fas fa-cog"></i> Settings</div>
   </div>
 
   <div class="panel active" id="panel-users">
@@ -183,7 +179,7 @@ body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
         <div style="background:#e2e8f0;color:#1e2a3a;font-size:12px;align-self:center;text-align:center;border-radius:8px;padding:8px 14px;">Admin AI ready. Try: /ban_email · /gift_vip_email · /delete_email · /undelete_email</div>
       </div>
       <div style="display:flex;gap:8px;padding:12px;border-top:1px solid #e4e7ec;background:#fff;">
-        <input type="text" id="aiInput" placeholder="Type command..." onkeydown="if(event.key==='Enter')sendAdminAI()" style="flex:1;padding:12px 16px;border-radius:24px;border:1.5px solid #e4e7ec;font-size:14px;outline:none;">
+        <input type="text" id="aiInput" placeholder="Type command..." onkeydown="if(event.key==='Enter') sendAdminAI()" style="flex:1;padding:12px 16px;border-radius:24px;border:1.5px solid #e4e7ec;font-size:14px;outline:none;">
         <button onclick="sendAdminAI()" style="background:#1e2a3a;color:#fff;border:none;padding:12px 20px;border-radius:24px;font-weight:700;font-size:13px;cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
       </div>
     </div>
@@ -212,6 +208,8 @@ const SUB_PACKS = [
 
 function doLogin() {
   const pw = document.getElementById('pwInput').value;
+  const err = document.getElementById('loginError');
+  err.textContent = '';
   if (pw === ADMIN_PASSWORD) {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminHeader').style.display = 'flex';
@@ -219,7 +217,10 @@ function doLogin() {
     loadRealData();
     if (window._adminRefresh) clearInterval(window._adminRefresh);
     window._adminRefresh = setInterval(loadRealData, 10000);
-  } else { toast('Wrong password', 'error'); document.getElementById('pwInput').value = ''; }
+  } else {
+    err.textContent = 'Wrong password. Try again.';
+    document.getElementById('pwInput').value = '';
+  }
 }
 function doLogout() {
   if (window._adminRefresh) clearInterval(window._adminRefresh);
@@ -286,7 +287,7 @@ function renderUsers(search) {
       : '<button class="action-btn unban" onclick="quickUnban(\'' + u.email + '\')" title="Unban"><i class="fas fa-check"></i></button>';
     const viewBtn = '<button class="action-btn view" onclick="openUserDetail(\'' + u.email + '\')" title="View"><i class="fas fa-eye"></i></button>';
     const deleteBtn = '<button class="action-btn delete" onclick="openDeleteModal(\'' + u.email + '\')" title="Delete"><i class="fas fa-trash"></i></button>';
-    return '<div class="list-item"><div class="avatar">' + initials + '</div><div class="info"><h4>' + (u.name||'User') + ' ' + planBadge + ' ' + statusBadge + '</h4><p>' + (u.email||'') + ' · ' + (u.phone||'no phone') + ' · ' + (u.boosts||0) + ' boosts' + (u.referrals_count ? ' · ' + u.referrals_count + ' refs' : '') + '</p></div><div class="actions">' + giftBtn + statusBtn + viewBtn + deleteBtn + '</div></div>';
+    return '<div class="list-item"><div class="avatar">' + initials + '</div><div class="info"><h4>' + (u.name||'User') + ' ' + planBadge + ' ' + statusBadge + '</h4><p>' + (u.email||'') + ' · ' + (u.phone||'no phone') + ' · ' + (u.boosts||0) + ' boosts</p></div><div class="actions">' + giftBtn + statusBtn + viewBtn + deleteBtn + '</div></div>';
   }).join('');
 }
 
@@ -309,7 +310,7 @@ function renderReports() {
     const banBtn = '<button class="action-btn ban" onclick="openBanModal(\'' + (r.reported_email||'') + '\')" title="Ban/Suspend"><i class="fas fa-ban"></i></button>';
     const delBtn = '<button class="action-btn delete" onclick="openDeleteModal(\'' + (r.reported_email||'') + '\')" title="Delete"><i class="fas fa-trash"></i></button>';
     const date = r.created_at ? new Date(r.created_at).toLocaleString() : '';
-    return '<div class="list-item" style="background:#fef2f2;border-color:#fecaca;display:block;"><div style="display:flex;align-items:center;gap:12px;"><div class="avatar" style="background:#ef4444;"><i class="fas fa-flag"></i></div><div class="info" style="flex:1;"><h4>Report against ' + (r.reported_email||'?') + '</h4><p>By: ' + (r.reporter_email||'?') + ' · ' + date + '</p></div><div class="actions">' + banBtn + delBtn + '</div></div><div class="reason-box"><div class="reason-label">Reason</div><div class="reason-text">' + (r.reason || 'No reason given') + '</div></div>' + (r.details ? '<div class="reason-box" style="background:#fff7ed;border-left-color:#ff6b00;margin-top:6px;"><div class="reason-label" style="color:#c2410c;">Details</div><div class="reason-text">' + r.details + '</div></div>' : '') + '</div>';
+    return '<div class="list-item" style="background:#fef2f2;border-color:#fecaca;display:block;"><div style="display:flex;align-items:center;gap:12px;"><div class="avatar" style="background:#ef4444;"><i class="fas fa-flag"></i></div><div class="info" style="flex:1;"><h4>Report against ' + (r.reported_email||'?') + '</h4><p>By: ' + (r.reporter_email||'?') + ' · ' + date + '</p></div><div class="actions">' + banBtn + delBtn + '</div></div><div class="reason-box"><div class="reason-label">Reason</div><div class="reason-text">' + (r.reason || 'No reason given') + '</div></div></div>';
   }).join('');
 }
 
@@ -352,14 +353,14 @@ function selectGiftType(type) {
   if (type === 'boosts') list.innerHTML = BOOST_PACKS.map(n => '<div class="pack-option" onclick="selectPack(this, ' + n + ', \'boost\')"><div class="p-name">' + n + ' boosts</div><div class="p-price">Select</div></div>').join('');
   else list.innerHTML = SUB_PACKS.map(p => '<div class="pack-option" onclick="selectPack(this, \'' + p.id + '\', \'sub\')"><div class="p-name">' + p.name + '</div><div class="p-price">' + p.price + '</div></div>').join('');
 }
-function selectuserPack(el, value, kind) {
-  el.parentElement.querySelectorAll('.pack-option').forEach(p => p.classList.name ||.remove('selected'));
+function selectPack(el, value, kind) {
+  el.parentElement.querySelectorAll('.pack-option').forEach(p => p.classList.remove('selected'));
   el.classList.add('selected');
-  window._giftValue = { email value: value, kind: kind };
+  window._giftValue = { value: value, kind: kind };
 }
 async function confirmGift(email) {
-  if (!window._g)iftValue) { toast('Select a pack first', 'error'); return; }
-  const val = window :._giftValue;
+  if (!window._giftValue) { toast('Select a pack first', 'error'); return; }
+  const val = window._giftValue;
   try {
     let res;
     if (val.kind === 'boost') {
@@ -376,7 +377,7 @@ async function confirmGift(email) {
 
 function openBanModal(email) {
   const user = users.find(u => u.email === email);
-  const name = user ? ( email;
+  const name = user ? (user.name || email) : email;
   const status = user ? (user.status || 'active') : 'active';
   document.getElementById('modalBox').innerHTML = '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
     '<div class="modal-header"><div class="modal-icon" style="background:#fee2e2;color:#dc2626;"><i class="fas fa-ban"></i></div><div><h3>Manage ' + name + '</h3><p>' + email + ' · Current: ' + status + '</p></div></div>' +
@@ -389,7 +390,7 @@ function openBanModal(email) {
       '<div id="daysInput" style="display:none;"><label>Days to suspend</label><input type="number" id="suspendDays" value="7" min="1" max="365"></div>' +
       '<button class="btn-modal-danger" onclick="confirmBanAction(\'' + email + '\')" id="confirmBanBtn"><i class="fas fa-ban"></i> Confirm</button>' +
     '</div>' +
-    (status !== 'active' ? '<button class="btn-modal-success" onclick="quickUnban(\'' + email + '\'); closeModal();"><i class="fas fa-check"></i> Remove ' + (status === 'banned' ? 'Ban' : (status === 'deleted' ? 'Deleted status' : 'Suspension')) + '</button>' : '') +
+    (status !== 'active' ? '<button class="btn-modal-success" onclick="quickUnban(\'' + email + '\'); closeModal();"><i class="fas fa-check"></i> Remove Status</button>' : '') +
     '<button class="btn-modal-secondary" onclick="closeModal()">Cancel</button>';
   window._banAction = null;
   openModal();
@@ -409,7 +410,7 @@ async function confirmBanAction(email) {
   const body = window._banAction === 'suspend' ? { email: email, status: 'suspended', days: parseInt(document.getElementById('suspendDays').value) || 7 } : { email: email, status: 'banned' };
   try {
     const res = await fetch(BACKEND_URL + '/admin/ban-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json());
-    if (res.success) { toast('✅ ' + (window._banAction === 'suspend' ? 'Suspended' : 'Banned') + ' ' + email, 'success'); closeModal(); loadRealData(); }
+    if (res.success) { toast('✅ Updated ' + email, 'success'); closeModal(); loadRealData(); }
     else { toast('❌ ' + (res.error || 'Failed'), 'error'); }
   } catch (e) { toast('Network error', 'error'); }
 }
@@ -420,13 +421,12 @@ async function quickUnban(email) {
   } catch (e) { toast('Network error', 'error'); }
 }
 
-// DELETE USER
 function openDeleteModal(email) {
   const user = users.find(u => u.email === email);
   const name = user ? (user.name || email) : email;
   document.getElementById('modalBox').innerHTML = '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
     '<div class="modal-header"><div class="modal-icon" style="background:#fee2e2;color:#dc2626;"><i class="fas fa-trash"></i></div><div><h3>Delete ' + name + '?</h3><p>' + email + '</p></div></div>' +
-    '<p style="font-size:14px;color:#5e6f7e;line-height:1.6;margin-bottom:20px;">This will permanently mark the account as deleted and remove all their products. You can restore it later from the Deleted tab.</p>' +
+    '<p style="font-size:14px;color:#5e6f7e;line-height:1.6;margin-bottom:20px;">This will mark the account as deleted and remove their products. You can restore later from the Deleted tab.</p>' +
     '<div style="display:flex;gap:10px;">' +
       '<button class="btn-modal-secondary" style="flex:1;margin-top:0;" onclick="closeModal()">NO</button>' +
       '<button class="btn-modal-danger" style="flex:1;margin-top:0;" onclick="confirmDeleteUser(\'' + email + '\')">YES, DELETE</button>' +
@@ -441,7 +441,6 @@ async function confirmDeleteUser(email) {
   } catch (e) { toast('Network error', 'error'); }
 }
 
-// RESTORE USER
 function openRestoreModal(email) {
   const user = deletedUsers.find(u => u.email === email) || users.find(u => u.email === email);
   const name = user ? (user.name || email) : email;
@@ -469,7 +468,7 @@ function openUserDetail(email) {
   const status = user.status || 'active';
   const plan = user.plan || 'free';
   const initials = name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
-  const statusBadge = status === 'active' ? '<span class="badge-status active">Active</span>' : (status === 'suspended' ? '<span class="badge-status suspended">Suspended (' + (user.suspend_days||'?') + 'd)</span>' : (status === 'deleted' ? '<span class="badge-status deleted">Deleted</span>' : '<span class="badge-status banned">Banned</span>'));
+  const statusBadge = status === 'active' ? '<span class="badge-status active">Active</span>' : (status === 'suspended' ? '<span class="badge-status suspended">Suspended</span>' : (status === 'deleted' ? '<span class="badge-status deleted">Deleted</span>' : '<span class="badge-status banned">Banned</span>'));
   const planBadge = '<span class="badge-plan ' + plan + '">' + plan.toUpperCase() + '</span>';
   const userProducts = products.filter(p => p.seller_email === email);
   document.getElementById('modalBox').innerHTML = '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
@@ -514,7 +513,6 @@ function saveNewPassword() {
   setTimeout(() => doLogout(), 1200);
 }
 
-// CLEAR DATA
 function openClearData() {
   document.getElementById('modalBox').innerHTML = '<button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>' +
     '<div class="modal-header"><div class="modal-icon" style="background:#fee2e2;color:#dc2626;"><i class="fas fa-broom"></i></div><div><h3>Clear data?</h3><p>This cannot be undone</p></div></div>' +
@@ -540,7 +538,6 @@ async function confirmClearData() {
   } catch (e) { toast('Network error', 'error'); }
 }
 
-// ADMIN AI
 async function sendAdminAI() {
   const input = document.getElementById('aiInput');
   const text = input.value.trim();
@@ -551,56 +548,57 @@ async function sendAdminAI() {
   msgs.scrollTop = msgs.scrollHeight;
   let reply = '⚙️ Command received.';
   try {
-    if (text.startsWith('/ban_')) {
-      const email = text.replace('/ban_','').trim().toLowerCase();
+    const cleanCmd = text.trim();
+    if (cleanCmd.indexOf('/ban_') === 0) {
+      const email = cleanCmd.slice(5).trim().toLowerCase();
       const res = await fetch(BACKEND_URL + '/admin/ban-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, status: 'banned' }) }).then(r => r.json());
       reply = res.success ? '⛔ Banned ' + email : '❌ ' + (res.error || 'Failed');
       loadRealData();
-    } else if (text.startsWith('/unban_')) {
-      const email = text.replace('/unban_','').trim().toLowerCase();
+    } else if (cleanCmd.indexOf('/unban_') === 0) {
+      const email = cleanCmd.slice(7).trim().toLowerCase();
       const res = await fetch(BACKEND_URL + '/admin/ban-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, status: 'active' }) }).then(r => r.json());
       reply = res.success ? '✅ Unbanned ' + email : '❌ ' + (res.error || 'Failed');
       loadRealData();
-    } else if (text.startsWith('/delete_')) {
-      const email = text.replace('/delete_','').trim().toLowerCase();
+    } else if (cleanCmd.indexOf('/delete_') === 0) {
+      const email = cleanCmd.slice(8).trim().toLowerCase();
       const res = await fetch(BACKEND_URL + '/admin/delete-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) }).then(r => r.json());
       reply = res.success ? '🗑️ Deleted ' + email : '❌ ' + (res.error || 'Failed');
       loadRealData();
-    } else if (text.startsWith('/undelete_') || text.startsWith('/restore_')) {
-      const email = text.replace('/undelete_','').replace('/restore_','').trim().toLowerCase();
+    } else if (cleanCmd.indexOf('/undelete_') === 0) {
+      const email = cleanCmd.slice(10).trim().toLowerCase();
       const res = await fetch(BACKEND_URL + '/admin/restore-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email }) }).then(r => r.json());
       reply = res.success ? '✅ Restored ' + email : '❌ ' + (res.error || 'Failed');
       loadRealData();
-    } else if (text.startsWith('/gift_vip_')) {
-      const email = text.replace('/gift_vip_','').trim().toLowerCase();
+    } else if (cleanCmd.indexOf('/gift_vip_') === 0) {
+      const email = cleanCmd.slice(10).trim().toLowerCase();
       const res = await fetch(BACKEND_URL + '/admin/gift-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, plan: 'vip' }) }).then(r => r.json());
-      reply = res.success ? '✅ Gifted VIP + 200 boosts to ' + email : '❌ ' + (res.error || 'Failed');
+      reply = res.success ? '✅ Gifted VIP to ' + email : '❌ ' + (res.error || 'Failed');
       loadRealData();
-    } else if (text.startsWith('/gift_plus_')) {
-      const email = text.replace('/gift_plus_','').trim().toLowerCase();
+    } else if (cleanCmd.indexOf('/gift_plus_') === 0) {
+      const email = cleanCmd.slice(11).trim().toLowerCase();
       const res = await fetch(BACKEND_URL + '/admin/gift-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, plan: 'plus' }) }).then(r => r.json());
       reply = res.success ? '✅ Gifted Plus to ' + email : '❌ ' + (res.error || 'Failed');
       loadRealData();
-    } else if (text.startsWith('/gift_pro_')) {
-      const email = text.replace('/gift_pro_','').trim().toLowerCase();
+    } else if (cleanCmd.indexOf('/gift_pro_') === 0) {
+      const email = cleanCmd.slice(10).trim().toLowerCase();
       const res = await fetch(BACKEND_URL + '/admin/gift-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, plan: 'pro' }) }).then(r => r.json());
       reply = res.success ? '✅ Gifted Pro to ' + email : '❌ ' + (res.error || 'Failed');
       loadRealData();
-    } else if (text.startsWith('/gift_premium_')) {
-      const email = text.replace('/gift_premium_','').trim().toLowerCase();
+    } else if (cleanCmd.indexOf('/gift_premium_') === 0) {
+      const email = cleanCmd.slice(14).trim().toLowerCase();
       const res = await fetch(BACKEND_URL + '/admin/gift-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, plan: 'premium' }) }).then(r => r.json());
       reply = res.success ? '✅ Gifted Premium to ' + email : '❌ ' + (res.error || 'Failed');
       loadRealData();
-    } else if (text.match(/^\/gift_(\d+)_boosts_(.+)$/)) {
-      const m = text.match(/^\/gift_(\d+)_boosts_(.+)$/);
+    } else if (cleanCmd.match(/^\/gift_(\d+)_boosts_(.+)$/)) {
+      const m = cleanCmd.match(/^\/gift_(\d+)_boosts_(.+)$/);
       const amount = parseInt(m[1]);
       const email = m[2].trim().toLowerCase();
       const res = await fetch(BACKEND_URL + '/admin/add-boosts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, amount: amount }) }).then(r => r.json());
       reply = res.success ? '✅ Gifted ' + amount + ' boosts to ' + email : '❌ ' + (res.error || 'Failed');
       loadRealData();
-    } else if (text.toLowerCase().includes('users')) {
+    } else if (cleanCmd.toLowerCase().indexOf('users') !== -1) {
       reply = '👥 Total: ' + users.length + ' · Banned: ' + users.filter(u => u.status === 'banned').length + ' · Deleted: ' + deletedUsers.length;
-    } else if (text.toLowerCase().includes('revenue')) {
+    } else if (cleanCmd.toLowerCase().indexOf('revenue') !== -1) {
       reply = '💰 Total revenue: GH₵' + calculateRevenue().toLocaleString();
     } else {
       reply = 'Try: /ban_email · /unban_email · /delete_email · /undelete_email · /gift_vip_email · /gift_100_boosts_email';
