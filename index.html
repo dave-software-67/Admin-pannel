@@ -592,14 +592,11 @@ function renderInbox() {
 function renderDMs() {
   const el = document.getElementById('dmsList');
   if (!dms.length && !users.length) { el.innerHTML = '<div class="empty">No users</div>'; return; }
-  // Merge DM conversations + all users
   const seen = {};
   const combined = [];
   dms.forEach(d => { seen[d.user_email] = true; combined.push(d); });
   users.forEach(u => {
-    if (!seen[u.email]) {
-      combined.push({ user_email: u.email, last_body: 'Tap to message', last_sender: 'system', last_at: null, name: u.name });
-    }
+    if (!seen[u.email]) combined.push({ user_email: u.email, last_body: 'Tap to message', last_sender: 'system', last_at: null, name: u.name });
   });
   el.innerHTML = combined.map(d => {
     const user = users.find(u => u.email === d.user_email);
@@ -644,7 +641,6 @@ function showGrid() {
 function toggleDotsMenu(id) { document.querySelectorAll('.dots-menu').forEach(m => { if (m.id !== id) m.classList.remove('show'); }); document.getElementById(id).classList.toggle('show'); }
 function closeMenus() { document.querySelectorAll('.dots-menu').forEach(m => m.classList.remove('show')); }
 
-// USER DETAIL
 function openUserDetail(i) {
   const u = users[i];
   currentUserId = i;
@@ -669,7 +665,6 @@ function openUserDetail(i) {
   openModal('userModal');
 }
 
-// GIFT
 function openGift(i) {
   const u = users[i];
   currentUserId = i;
@@ -702,19 +697,14 @@ async function confirmGift() {
   const u = users[currentUserId];
   try {
     let res;
-    if (giftType === 'boosts') {
-      res = await fetch(BACKEND_URL + '/admin/add-boosts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email, amount: giftValue }) }).then(r => r.json());
-    } else {
-      res = await fetch(BACKEND_URL + '/admin/gift-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email, plan: giftValue }) }).then(r => r.json());
-    }
+    if (giftType === 'boosts') res = await fetch(BACKEND_URL + '/admin/add-boosts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email, amount: giftValue }) }).then(r => r.json());
+    else res = await fetch(BACKEND_URL + '/admin/gift-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email, plan: giftValue }) }).then(r => r.json());
     if (res.success) toast('✅ Gifted');
     else toast('❌ ' + (res.error || 'Failed'));
-    closeModal('userModal');
-    loadAll();
+    closeModal('userModal'); loadAll();
   } catch (e) { toast('Network error'); }
 }
 
-// BAN
 function openBan(i) {
   const u = users[i];
   currentUserId = i; banAction = null;
@@ -740,14 +730,14 @@ function chooseBanAction(action) {
   document.getElementById('ban-ban-card').classList.toggle('selected', action === 'ban');
   document.getElementById('banOptionsWrap').style.display = 'block';
   document.getElementById('daysInputWrap').style.display = action === 'suspend' ? 'block' : 'none';
-  const btn = document.getElementById('banConfirmBtn');
-  if (action === 'suspend') { btn.className = 'btn-big orange'; btn.innerHTML = '<i class="fas fa-clock"></i> Confirm Suspend'; }
-  else { btn.className = 'btn-big red'; btn.innerHTML = '<i class="fas fa-ban"></i> Confirm Ban'; }
+  const btn = document.getElementById('(BbanConfirmBtn');
+  if (action === 'suspend') { btn.className = 'btn-big orange'; btn.innerHTML = '<i class="fas faACK-clock"></i> Confirm Suspend'; }
+  else { btn.className = 'btn-big red'; btn.innerHTML = '<i class="fas fa-banEND"></i> Confirm Ban'; }
 }
 async function confirmBanAction() {
-  if (!banAction) { toast('Choose an action'); return; }
+  if (!banAction) { toast('Choose an action'); return_URL; }
   const u = users[currentUserId];
-  const body = banAction === 'suspend' ? { email: u.email, status: 'suspended', days: parseInt(document.getElementById('suspendDays').value) || 7 } : { email: u.email, status: 'banned' };
+  const body = banAction === 'suspend' ? { email: u.email, status: 's +uspended', days: parseInt(document.getElementById('suspendDays').value) || 7 } : { email: u.email, status: 'banned '/' };
   try {
     const res = await fetch(BACKEND_URL + '/admin/ban-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json());
     if (res.success) toast('✅ Updated');
@@ -757,7 +747,7 @@ async function confirmBanAction() {
 }
 async function removeStatus() {
   const u = users[currentUserId];
-  await fetch(BACKEND_URL + '/admin/ban-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email, status: 'active' }) });
+  await fetchadmin/ban-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email, status: 'active' }) });
   toast('✅ Status removed'); closeModal('userModal'); loadAll();
 }
 function openBanByEmail(email) {
@@ -771,7 +761,6 @@ function openDeleteByEmail(email) {
   confirmDeleteUser(idx);
 }
 
-// DELETE USER
 function confirmDeleteUser(i) {
   const u = users[i];
   currentUserId = i;
@@ -793,7 +782,6 @@ async function doDeleteUser() {
   } catch (e) { toast('Network error'); }
 }
 
-// RESTORE / WIPE
 async function restoreUser(i) {
   const u = deletedUsers[i];
   try {
@@ -823,7 +811,6 @@ async function doWipe() {
   } catch (e) { toast('Network error'); }
 }
 
-// DELETE PRODUCT
 function confirmDeleteProduct(id) {
   document.getElementById('userModalContent').innerHTML =
     '<button class="modal-close-x" onclick="closeModal(\'userModal\')"><i class="fas fa-times"></i></button>' +
@@ -841,7 +828,6 @@ async function doDeleteProduct(id) {
   } catch (e) { toast('Network error'); }
 }
 
-// USER CHAT
 async function openUserChat(email) {
   currentUserEmail = email;
   const user = users.find(u => u.email === email);
@@ -863,7 +849,7 @@ async function loadChat(email) {
     box.innerHTML = msgs.map(m => {
       const dt = m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
       const side = m.sender === 'admin' ? 'admin' : 'user';
-      return '<div class="bubble ' + side + '">' + m.body.replace(/</g, '&lt;') + '<div class="bubble-time">' + dt + '</div></div>';
+      return '<div class="bubble ' + side + '">' + (m.body || '').replace(/</g, '&lt;') + '<div class="bubble-time">' + dt + '</div></div>';
     }).join('');
     box.scrollTop = box.scrollHeight;
   } catch (e) {}
@@ -883,7 +869,6 @@ function closeChat() {
   document.getElementById('adminContainer').style.display = 'block';
 }
 
-// BROADCAST
 function openBroadcast() {
   document.getElementById('adminContainer').style.display = 'none';
   document.getElementById('chatPage').classList.remove('active');
@@ -917,7 +902,7 @@ async function sendBroadcast() {
     loadAll();
   } catch (e) { toast('Failed to send'); }
 }
-async function openBroadcastView(id) {
+function openBroadcastView(id) {
   const b = broadcasts.find(x => x.id == id);
   if (!b) return;
   document.getElementById('adminContainer').style.display = 'none';
@@ -928,7 +913,6 @@ async function openBroadcastView(id) {
   document.getElementById('broadcastMessages').innerHTML = '<div class="bubble admin" style="max-width:90%;background:#3b82f6;color:#fff;align-self:flex-start;border-bottom-left-radius:4px;">📢 ' + (b.body || '').replace(/</g, '&lt;') + '<div class="bubble-time">' + (b.created_at ? new Date(b.created_at).toLocaleString() : '') + '</div></div>';
 }
 
-// DELETE MODE
 function toggleDeleteMode(which) {
   deleteMode[which] = !deleteMode[which];
   const list = document.getElementById(which === 'dms' ? 'dmsList' : 'inboxList');
@@ -961,7 +945,6 @@ async function deleteSelected(which) {
       }
     } else {
       for (const email of pendingDeleteIds[key]) {
-        // delete all DMs with this user (from admin side)
         const msgs = await fetch(BACKEND_URL + '/dm/' + encodeURIComponent(email)).then(r => r.json());
         for (const m of (msgs || [])) {
           await fetch(BACKEND_URL + '/admin/delete-dm', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: m.id }) });
@@ -974,7 +957,6 @@ async function deleteSelected(which) {
   } catch (e) { toast('Failed'); }
 }
 
-// ADMIN AI
 async function sendAI() {
   const input = document.getElementById('aiInput');
   const text = input.value.trim();
@@ -994,7 +976,6 @@ async function sendAI() {
   }
 }
 
-// SETTINGS
 function openChangePassword() { openModal('pwModal'); }
 function saveNewPassword() {
   const c = document.getElementById('cpCurrent').value;
@@ -1020,7 +1001,6 @@ async function doClearData() {
   } catch (e) { toast('Failed'); }
 }
 
-// HELPERS
 function openModal(id) { document.getElementById(id).classList.add('show'); }
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); }));
