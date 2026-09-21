@@ -150,12 +150,13 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .chat-back { background: transparent; border: none; font-size: 20px; padding: 4px; }
 .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; }
 .chat-avatar.broadcast { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.chat-avatar.ai { background: linear-gradient(135deg, #ff6b00, #ea580c); }
 .chat-info { flex: 1; min-width: 0; }
 .chat-info h4 { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
 .chat-info span { font-size: 11px; color: #22c55e; font-weight: 600; }
 .chat-info span.grey { color: #94a3b8; }
 .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f5f7fa; }
-.bubble { max-width: 78%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
+.bubble { max-width: 78%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
 .bubble.user { background: #3b82f6; color: #fff; align-self: flex-start; border-bottom-left-radius: 4px; }
 .bubble.admin { background: #fff; color: #1e2a3a; align-self: flex-end; border-bottom-right-radius: 4px; }
 .bubble-time { font-size: 10px; opacity: 0.7; margin-top: 4px; }
@@ -244,6 +245,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
     <button class="nav-card red" onclick="showPanel('reports')"><div class="icon-wrap"><i class="fas fa-flag"></i></div><div class="label">Reports</div><div class="sub" id="subReports">0 pending</div></button>
     <button class="nav-card purple" onclick="showPanel('products')"><div class="icon-wrap"><i class="fas fa-box"></i></div><div class="label">Products</div><div class="sub" id="subProducts">0 listed</div></button>
     <button class="nav-card green" onclick="showPanel('payments')"><div class="icon-wrap"><i class="fas fa-money-bill-wave"></i></div><div class="label">Payments</div><div class="sub">Transactions</div></button>
+    <button class="nav-card orange" onclick="showPanel('ai')"><div class="icon-wrap"><i class="fas fa-robot"></i></div><div class="label">Admin AI</div><div class="sub">Chat + Commands</div></button>
     <button class="nav-card slate" onclick="showPanel('deleted')"><div class="icon-wrap"><i class="fas fa-user-slash"></i></div><div class="label">Deleted</div><div class="sub" id="subDeleted">0 users</div></button>
     <button class="nav-card blue2" onclick="showPanel('inbox')"><div class="icon-wrap"><i class="fas fa-inbox"></i></div><div class="label">Inbox</div><div class="sub" id="subInbox">0 broadcasts</div></button>
     <button class="nav-card teal" onclick="showPanel('dms')"><div class="icon-wrap"><i class="fas fa-comments"></i></div><div class="label">DMs</div><div class="sub" id="subDMs">0 chats</div></button>
@@ -279,6 +281,26 @@ button:active { transform: scale(0.95); opacity: 0.88; }
     <div class="panel-box">
       <h2><i class="fas fa-money-bill-wave" style="color:#16a34a;"></i> Payments</h2>
       <div id="paymentsList"><div class="loading">Loading payments...</div></div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-ai">
+    <button class="panel-back" onclick="showGrid()"><i class="fas fa-arrow-left"></i> Back</button>
+    <div class="panel-box" style="padding:0; overflow:hidden;">
+      <div style="background:#ff6b00; color:#fff; padding:14px 18px; display:flex; align-items:center; gap:12px;">
+        <i class="fas fa-robot" style="font-size:22px;"></i>
+        <div style="flex:1;">
+          <div style="font-size:15px; font-weight:800;">Admin AI</div>
+          <div style="font-size:11px; opacity:0.9;">Talk to me in plain English</div>
+        </div>
+      </div>
+      <div class="chat-messages" id="aiMessages" style="height:420px;">
+        <div class="bubble admin" style="background:#fff; color:#1e2a3a; align-self:flex-start; border-bottom-left-radius:4px;">Hi 👋 I'm your Admin AI. Try:<br>• "How many users do I have?"<br>• "Ban sam@gmail.com"<br>• "Gift VIP to dave@gmail.com"<br>• "Send a broadcast saying Welcome to Lenidi!"</div>
+      </div>
+      <div class="chat-input-bar">
+        <input id="aiInput" placeholder="Ask or command..." onkeydown="if(event.key==='Enter')sendAI()">
+        <button class="chat-send-btn" style="background:#ff6b00;" onclick="sendAI()">Send</button>
+      </div>
     </div>
   </div>
 
@@ -338,6 +360,11 @@ button:active { transform: scale(0.95); opacity: 0.88; }
         <div class="user-info"><h4>Clear payments</h4><p>Wipe payment records</p></div>
         <button class="mini-btn wipe" style="width:auto;padding:8px 16px;border-radius:40px;font-weight:700;" onclick="confirmClearData()">Clear</button>
       </div>
+      <div class="user-row">
+        <div class="user-avatar" style="background:#ff6b00;"><i class="fas fa-robot"></i></div>
+        <div class="user-info"><h4>Clear Admin AI chat</h4><p>Wipe AI memory + chat</p></div>
+        <button class="mini-btn wipe" style="width:auto;padding:8px 16px;border-radius:40px;font-weight:700;" onclick="clearAdminAI()">Clear</button>
+      </div>
     </div>
   </div>
 
@@ -380,14 +407,14 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 <div class="modal-overlay" id="userModal"><div class="modal-box" id="userModalContent"></div></div>
 <div class="modal-overlay" id="titleModal"><div class="modal-box">
   <h3 style="font-size:22px;font-weight:800;margin-bottom:6px;">Message Title</h3>
-  <p style="font-size:13px;color:#7f8c8d;margin-bottom:16px;">This shows at the top of your broadcast and in the inbox</p>
+  <p style="font-size:13px;color:#7f8c8d;margin-bottom:16px;">This shows at the top of your broadcast</p>
   <input type="text" id="titleInput" placeholder="e.g. Welcome to Lenidi!" maxlength="60" style="width:100%;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:16px;outline:none;font-size:14px;">
   <button class="btn-big grey" onclick="closeModal('titleModal')">Cancel</button>
   <button class="btn-big blue" onclick="saveTitle()">Save</button>
 </div></div>
 <div class="modal-overlay" id="clearModal"><div class="modal-box">
   <h3 style="font-size:22px;font-weight:800;margin-bottom:6px;">Clear payments?</h3>
-  <p style="font-size:13px;color:#7f8c8d;margin-bottom:16px;">Wipes payment records. Users, products, reports not touched.</p>
+  <p style="font-size:13px;color:#7f8c8d;margin-bottom:16px;">Wipes payment records.</p>
   <button class="btn-big grey" onclick="closeModal('clearModal')">No</button>
   <button class="btn-big red" onclick="doClearData()">Yes, clear</button>
 </div></div>
@@ -430,6 +457,11 @@ function doLogin() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminHeader').style.display = 'flex';
     document.getElementById('adminContainer').style.display = 'block';
+    // Clear AI chat from server
+    fetch(BACKEND_URL + '/admin/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clearHistory: true }) }).catch(() => {});
+    // Reset AI UI
+    const aiBox = document.getElementById('aiMessages');
+    if (aiBox) aiBox.innerHTML = '<div class="bubble admin" style="background:#fff; color:#1e2a3a; align-self:flex-start; border-bottom-left-radius:4px;">Hi 👋 I\'m your Admin AI. Try:<br>• "How many users do I have?"<br>• "Ban sam@gmail.com"<br>• "Gift VIP to dave@gmail.com"<br>• "Send a broadcast saying Welcome to Lenidi!"</div>';
     loadAll();
     if (window._adminInterval) clearInterval(window._adminInterval);
     window._adminInterval = setInterval(loadAll, 15000);
@@ -440,6 +472,7 @@ function doLogin() {
 }
 function doLogout() {
   if (window._adminInterval) clearInterval(window._adminInterval);
+  fetch(BACKEND_URL + '/admin/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clearHistory: true }) }).catch(() => {});
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('adminHeader').style.display = 'none';
   document.getElementById('adminContainer').style.display = 'none';
@@ -615,6 +648,7 @@ function showPanel(id) {
   document.getElementById('chatPage').classList.remove('active');
   document.getElementById('broadcastPage').classList.remove('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (id === 'ai') setTimeout(() => document.getElementById('aiInput').focus(), 200);
 }
 function showGrid() {
   document.getElementById('mainGrid').style.display = 'grid';
@@ -627,6 +661,47 @@ function showGrid() {
 function toggleDotsMenu(id) { document.querySelectorAll('.dots-menu').forEach(m => { if (m.id !== id) m.classList.remove('show'); }); document.getElementById(id).classList.toggle('show'); }
 function closeMenus() { document.querySelectorAll('.dots-menu').forEach(m => m.classList.remove('show')); }
 
+// ===== ADMIN AI =====
+async function sendAI() {
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if (!text) return;
+  const box = document.getElementById('aiMessages');
+  box.innerHTML += '<div class="bubble user">' + text.replace(/</g, '&lt;') + '</div>';
+  input.value = '';
+  box.scrollTop = box.scrollHeight;
+  const typing = document.createElement('div');
+  typing.className = 'bubble admin';
+  typing.id = 'aiTyping';
+  typing.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="color:#ff6b00;"></i> Thinking...';
+  box.appendChild(typing);
+  box.scrollTop = box.scrollHeight;
+  try {
+    const res = await fetch(BACKEND_URL + '/admin/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text }) }).then(r => r.json());
+    const t = document.getElementById('aiTyping'); if (t) t.remove();
+    let reply = res.reply || 'No reply';
+    if (res.actionResults && res.actionResults.length) {
+      reply += '\n\n' + res.actionResults.join('\n');
+    }
+    box.innerHTML += '<div class="bubble admin">' + reply.replace(/\n/g, '<br>') + '</div>';
+    box.scrollTop = box.scrollHeight;
+    if (res.hasAction) loadAll();
+  } catch (e) {
+    const t = document.getElementById('aiTyping'); if (t) t.remove();
+    box.innerHTML += '<div class="bubble admin">⚠️ Error: ' + e.message + '</div>';
+    box.scrollTop = box.scrollHeight;
+  }
+}
+async function clearAdminAI() {
+  if (!confirm('Clear all Admin AI chat + memory?')) return;
+  try {
+    await fetch(BACKEND_URL + '/admin/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clearHistory: true }) });
+    document.getElementById('aiMessages').innerHTML = '<div class="bubble admin" style="background:#fff; color:#1e2a3a; align-self:flex-start; border-bottom-left-radius:4px;">Chat cleared. Fresh start 😊</div>';
+    toast('✅ AI chat cleared');
+  } catch (e) { toast('Failed'); }
+}
+
+// USER DETAIL
 function openUserDetail(i) {
   const u = users[i];
   currentUserId = i;
@@ -680,10 +755,10 @@ function chooseGiftType(type) {
 function selectPack(el, value) { el.parentElement.querySelectorAll('.pack-row').forEach(r => r.classList.remove('selected')); el.classList.add('selected'); giftValue = value; }
 async function confirmGift() {
   if (!giftValue) { toast('Select a pack first'); return; }
-  const u = users[currentUserId];
+     const u = users[currentUserId];
   try {
     let res;
-    if (giftType === 'boosts') res = await fetch(BACKEND_URL + '/admin/add-boosts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email, amount: giftValue }) }).then(r => r.json());
+    if (g '<iftType ===p 'boosts') res = await fetch(BACKEND_URL + '/admin/add-boosts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email, amount: giftValue }) }).then(r => r.json());
     else res = await fetch(BACKEND_URL + '/admin/gift-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email, plan: giftValue }) }).then(r => r.json());
     if (res.success) toast('✅ Gifted');
     else toast('❌ ' + (res.error || 'Failed'));
@@ -698,9 +773,9 @@ function openBan(i) {
   document.getElementById('userModalContent').innerHTML =
     '<button class="modal-close-x" onclick="closeModal(\'userModal\')"><i class="fas fa-times"></i></button>' +
     '<div class="modal-head"><div class="ico-circle red"><i class="fas fa-ban"></i></div><div class="head-txt"><h3>Manage ' + (u.name || 'User') + '</h3><p>' + u.email + ' · Current: ' + (u.status || 'active') + '</p></div></div>' +
-    '<div class="modal-label">Choose action</div>' +
+    '<div class=" stylemodal-label">Choose action</div>' +
     '<div class="choice-row">' +
-      '<div class="choice-card-big" id="ban-suspend-card" onclick="chooseBanAction(\'suspend\')"><i class="fas fa-clock" style="color:#f59e0b;"></i><h4>Suspend</h4><p>Temp (days)</p></div>' +
+      '<div class="choice-card="-big" id="ban-suspend-card" onclick="chooseBanAction(\'suspend\')"><i class="fas fa-clock" stylecolor="color:#f59e0b;"></i><h4>Suspend</h4><p>Temp (days)</p></div>' +
       '<div class="choice-card-big" id="ban-ban-card" onclick="chooseBanAction(\'ban\')"><i class="fas fa-times-circle" style="color:#dc2626;"></i><h4>Ban</h4><p>Permanent</p></div>' +
     '</div>' +
     '<div id="banOptionsWrap" style="display:none;">' +
@@ -793,7 +868,7 @@ function confirmDeleteProduct(id) {
   document.getElementById('userModalContent').innerHTML =
     '<button class="modal-close-x" onclick="closeModal(\'userModal\')"><i class="fas fa-times"></i></button>' +
     '<div class="modal-head"><div class="ico-circle red"><i class="fas fa-trash"></i></div><div class="head-txt"><h3>Delete product?</h3><p>ID: ' + id + '</p></div></div>' +
-    '<p style="color:#b91c1c;font-weight:700;margin-bottom:20px;">⚠️ Removes from Supabase forever.</p>' +
+:#b91c1c;font-weight:700;margin-bottom:20px;">⚠️ Removes from Supabase forever.</p>' +
     '<button class="btn-big grey" onclick="closeModal(\'userModal\')">No</button>' +
     '<button class="btn-big red" onclick="doDeleteProduct(' + id + ')">Yes, delete</button>';
   openModal('userModal');
@@ -910,7 +985,7 @@ function openBroadcastView(id) {
   document.getElementById('broadcastPage').classList.add('active');
   currentBroadcastTitle = b.title;
   document.getElementById('broadcastTitle').innerHTML = b.title + ' <i class="fas fa-pencil-alt" style="font-size:12px;color:#3b82f6;margin-left:6px;cursor:pointer;" onclick="editBroadcastTitle()"></i>';
-  document.getElementById('broadcastMessages').innerHTML = '<div class="bubble admin" style="max-width:90%;background:#3b82f6;color:#fff;align-self:flex-start;border-bottom-left-radius:4px;">📢 ' + (b.body || '').replace(/</g, '&lt;') + '<div class="bubble-time">' + (b.created_at ? new Date(b.created_at).toLocaleString() : '') + '</div></div>';
+  document.getElementById('broadcastMessages').innerHTML = '<div class="bubble admin" style="max-width:90%;background:#3b82f6;color:#fff;align-self: flex-start;border-bottom-left-radius:4px;">📢 ' + (b.body || '').replace(/</g, '&lt;') + '<div class="bubble-time">' + (b.created_at ? new Date(b.created_at).toLocaleString() : '') + '</div></div>';
 }
 
 // ===== DELETE MODE =====
@@ -933,14 +1008,15 @@ function cancelDelete(which) {
 function toggleCheck(el, which, id) {
   el.classList.toggle('selected');
   const key = which === 'dm' ? 'dms' : 'inbox';
-  if (el.classList.contains('selected')) { if (!pendingDeleteIds[key].includes(id)) pendingDeleteIds[key].push(id); }
-  else { pendingDeleteIds[key] = pendingDeleteIds[key].filter(x => x !== id); }
+  if ( tryel.classList.contains('selected')) { if (!pendingDeleteIds[key].includes(id)) pendingDeleteIds[key].push(id); }
+  else {
+ { pendingDeleteIds[key] = pendingDeleteIds[key].filter(x => x !== id); }
 }
-async function deleteSelected(which) {
+async function deleteSelected(which)    {
   const key = which === 'dms' ? 'dms' : 'inbox';
-  if (!pendingDeleteIds[key].length) { toast('Select messages first'); return; }
+  if (!pendingDeleteIds[key await].length) { toast('Select messages first'); return; }
   try {
-    if (key === 'inbox') {
+    if (key === 'inbox fetch') {
       for (const id of pendingDeleteIds[key]) {
         await fetch(BACKEND_URL + '/admin/delete-broadcast', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) });
       }
@@ -975,8 +1051,7 @@ function saveNewPassword() {
 }
 function confirmClearData() { openModal('clearModal'); }
 async function doClearData() {
-  try {
-    await fetch(BACKEND_URL + '/admin/clear-data', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
+(BACKEND_URL + '/admin/clear-data', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
     toast('🗑️ Cleared');
     closeModal('clearModal');
     loadAll();
