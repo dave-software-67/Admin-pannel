@@ -3,32 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lenidi Admin</title>
+<title>Lenidi Admin · Full Preview</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
 body { background: #f0f2f5; min-height: 100vh; color: #1e2a3a; }
-button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor: pointer; transition: transform 0.08s ease, opacity 0.08s ease; }
+button { -webkit-tap-highlight-color: transparent; font-family: inherit; cursor: pointer; }
 button:active { transform: scale(0.95); opacity: 0.88; }
+button { transition: transform 0.08s ease, opacity 0.08s ease; }
 
-.login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #1e2a3a, #2c3e50); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 1000; }
-.login-box { background: #fff; border-radius: 20px; padding: 32px 24px; max-width: 380px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
-.login-box .icon { width: 72px; height: 72px; border-radius: 50%; background: #1e2a3a; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-.login-box .icon i { font-size: 32px; color: #fff; }
-.login-box .logo { font-size: 32px; font-weight: 800; color: #1e2a3a; margin-bottom: 6px; }
-.login-box .subtitle { font-size: 11px; color: #7f8c8d; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
-.login-box h2 { font-size: 20px; margin-bottom: 6px; }
-.login-box p { font-size: 13px; color: #7f8c8d; margin-bottom: 20px; }
-.login-box input { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1.5px solid #e2e8f0; font-size: 15px; margin-bottom: 12px; outline: none; text-align: center; letter-spacing: 2px; }
-.login-box button { width: 100%; padding: 14px; border-radius: 60px; background: #1e2a3a; color: #fff; font-weight: 700; font-size: 15px; border: none; }
-.login-error { color: #ef4444; font-size: 12px; margin-top: 10px; min-height: 16px; }
-
-.admin-header { background: #1e2a3a; color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; position: sticky; top: 0; z-index: 100; }
-.admin-header .refresh-btn { background: rgba(255,255,255,0.15); color: #fff; border: none; padding: 8px 16px; border-radius: 40px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
-.admin-header .refresh-btn.spinning i { animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
+.admin-header { background: #1e2a3a; color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+.admin-header .refresh-btn { background: rgba(255,255,255,0.15); color: #fff; border: none; padding: 8px 16px; border-radius: 40px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .admin-header .title { flex: 1; text-align: center; font-size: 18px; font-weight: 800; letter-spacing: 1px; }
-.admin-header .logout-btn { background: rgba(255,255,255,0.1); color: #fff; border: none; padding: 8px 16px; border-radius: 40px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.admin-header .logout-btn { background: rgba(255,255,255,0.1); color: #fff; border: none; padding: 8px 16px; border-radius: 40px; font-size: 12px; font-weight: 600; flex-shrink: 0; display: flex; align-items: center; gap: 6px; }
 
 .container { max-width: 1000px; margin: 0 auto; padding: 16px; }
 
@@ -44,7 +31,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .stat-card.purple .stat-icon { color: #8b5cf6; }
 
 .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
-.nav-card { background: #fff; border-radius: 20px; padding: 22px 12px 18px; border: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 130px; box-shadow: 0 4px 14px rgba(0,0,0,0.06); text-align: center; }
+.nav-card { background: #fff; border-radius: 20px; padding: 22px 12px 18px; border: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 130px; box-shadow: 0 4px 14px rgba(0,0,0,0.06); cursor: pointer; text-align: center; }
 .nav-card .icon-wrap { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff; }
 .nav-card .label { font-size: 14px; font-weight: 800; color: #1e2a3a; }
 .nav-card .sub { font-size: 11px; color: #7f8c8d; font-weight: 600; }
@@ -61,11 +48,8 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .panel { display: none; }
 .panel.active { display: block; }
 .panel-box { background: #fff; border-radius: 16px; padding: 20px; border: 1px solid #e4e7ec; }
-.panel-back { display: inline-flex; align-items: center; gap: 8px; background: #f0f2f5; border: 1px solid #e4e7ec; padding: 10px 16px; border-radius: 40px; font-size: 13px; font-weight: 700; color: #1e2a3a; margin-bottom: 16px; }
+.panel-back { display: inline-flex; align-items: center; gap: 8px; background: #f0f2f5; border: 1px solid #e4e7ec; padding: 10px 16px; border-radius: 40px; font-size: 13px; font-weight: 700; color: #1e2a3a; margin-bottom: 16px; cursor: pointer; }
 .panel-box h2 { font-size: 20px; font-weight: 800; color: #1e2a3a; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
-
-.loading { text-align: center; padding: 40px; color: #94a3b8; font-size: 14px; }
-.empty { text-align: center; padding: 40px; color: #94a3b8; font-size: 14px; }
 
 .user-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fafc; border-radius: 12px; margin-bottom: 8px; border: 1px solid #edf0f3; }
 .user-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; }
@@ -73,14 +57,13 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .user-info h4 { font-size: 14px; font-weight: 700; color: #1e2a3a; margin-bottom: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .user-info p { font-size: 12px; color: #64748b; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .user-actions { display: flex; gap: 6px; }
-.mini-btn { width: 34px; height: 34px; border-radius: 50%; border: none; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+.user-actions .mini-btn { width: 34px; height: 34px; border-radius: 50%; border: none; font-size: 13px; display: flex; align-items: center; justify-content: center; }
 .mini-btn.gift { background: #dcfce7; color: #16a34a; }
 .mini-btn.ban { background: #fee2e2; color: #dc2626; }
 .mini-btn.view { background: #dbeafe; color: #1e2a3a; }
 .mini-btn.del { background: #1e2a3a; color: #fff; }
 .mini-btn.restore { background: #16a34a; color: #fff; }
 .mini-btn.wipe { background: #ef4444; color: #fff; }
-.mini-btn.msg { background: #f3e8ff; color: #8b5cf6; }
 
 .badge-plan { font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; }
 .badge-plan.free { background: #e2e8f0; color: #475569; }
@@ -94,30 +77,82 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .badge-status.banned { background: #fee2e2; color: #dc2626; }
 .badge-status.deleted { background: #1e2a3a; color: #fff; }
 
-.report-row { background: #fef2f2; border-radius: 12px; padding: 14px; border: 1px solid #fecaca; margin-bottom: 10px; }
-.report-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+/* ===== MODAL STYLES (matching screenshots) ===== */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998; display: none; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.show { display: flex; }
+.modal-box { background: #fff; border-radius: 24px; padding: 24px; max-width: 460px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
+
+.modal-close-x { position: absolute; top: 16px; right: 16px; background: #f0f2f5; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 15px; color: #4b5563; display: flex; align-items: center; justify-content: center; }
+
+.modal-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; padding-right: 40px; }
+.modal-head .ico-circle { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
+.modal-head .ico-circle.green { background: #dcfce7; color: #16a34a; }
+.modal-head .ico-circle.red { background: #fee2e2; color: #dc2626; }
+.modal-head .ico-circle.blue { background: #dbeafe; color: #3b82f6; }
+.modal-head .head-txt { flex: 1; min-width: 0; }
+.modal-head h3 { font-size: 22px; font-weight: 800; color: #1e2a3a; margin-bottom: 4px; }
+.modal-head p { font-size: 13px; color: #7f8c8d; word-break: break-all; }
+
+.modal-label { font-size: 13px; color: #1e2a3a; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+
+.choice-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+.choice-card-big { background: #f8fafc; border: 2px solid #e4e7ec; border-radius: 18px; padding: 22px 12px; text-align: center; cursor: pointer; }
+.choice-card-big.selected { border-color: #1e2a3a; background: #f0f2f5; }
+.choice-card-big i { font-size: 34px; margin-bottom: 10px; display: block; }
+.choice-card-big h4 { font-size: 17px; font-weight: 800; color: #1e2a3a; margin-bottom: 4px; }
+.choice-card-big p { font-size: 12px; color: #7f8c8d; }
+
+.pack-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; max-height: 340px; overflow-y: auto; }
+.pack-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; background: #f8fafc; border: 2px solid #e4e7ec; border-radius: 14px; cursor: pointer; }
+.pack-row.selected { border-color: #16a34a; background: #dcfce7; }
+.pack-row .pack-name { font-size: 15px; font-weight: 700; color: #1e2a3a; }
+.pack-row .pack-val { font-size: 15px; font-weight: 800; color: #1e2a3a; }
+
+.btn-big { width: 100%; padding: 16px; border-radius: 60px; font-weight: 800; font-size: 15px; border: none; margin-bottom: 10px; }
+.btn-big.green { background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; }
+.btn-big.red { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
+.btn-big.orange { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+.btn-big.grey { background: #f0f4f9; color: #1e2a3a; }
+.btn-big.blue { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; }
+
+/* ===== USER DETAIL MODAL ===== */
+.user-detail-head { text-align: center; padding-bottom: 20px; margin-bottom: 8px; }
+.user-detail-avatar { width: 90px; height: 90px; border-radius: 50%; background: #1e2a3a; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 800; margin: 0 auto 14px; }
+.user-detail-head h3 { font-size: 22px; font-weight: 800; color: #1e2a3a; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 8px; }
+.user-detail-head .status-pill { display: inline-block; padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+.status-pill.active { background: #dcfce7; color: #16a34a; }
+.status-pill.banned { background: #fee2e2; color: #dc2626; }
+.status-pill.suspended { background: #fef3c7; color: #d97706; }
+.status-pill.deleted { background: #1e2a3a; color: #fff; }
+.detail-line { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f2f5; font-size: 14px; }
+.detail-line .lbl { color: #7f8c8d; font-weight: 600; }
+.detail-line .val { color: #1e2a3a; font-weight: 700; text-align: right; word-break: break-word; max-width: 60%; }
+.detail-section-title { font-size: 15px; font-weight: 800; color: #1e2a3a; margin: 20px 0 10px; }
+.no-products { text-align: center; padding: 20px; color: #94a3b8; font-size: 13px; }
+
+.toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: #1e2a3a; color: #fff; padding: 12px 22px; border-radius: 60px; font-size: 13px; font-weight: 600; z-index: 99999; display: none; }
+.toast.show { display: block; }
+
+.empty-note { text-align: center; padding: 20px; color: #94a3b8; font-size: 13px; }
+
+/* Additional panels (unchanged from previous preview) */
+.report-row { background: #fef2f2; border-radius: 12px; padding: 12px; border: 1px solid #fecaca; margin-bottom: 10px; }
+.report-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
 .report-head .ico { width: 42px; height: 42px; border-radius: 50%; background: #ef4444; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-.report-head .txt { flex: 1; min-width: 150px; }
-.report-head h4 { font-size: 14px; font-weight: 700; color: #1e2a3a; margin-bottom: 2px; }
+.report-head h4 { font-size: 14px; font-weight: 700; }
 .report-head p { font-size: 12px; color: #64748b; }
-.report-actions { display: flex; gap: 6px; }
 .reason-box { background: #fff; border-left: 4px solid #ef4444; border-radius: 8px; padding: 10px 12px; }
-.reason-label { font-size: 10px; color: #b91c1c; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+.reason-label { font-size: 10px; color: #b91c1c; font-weight: 800; text-transform: uppercase; margin-bottom: 3px; }
 .reason-text { font-size: 13px; color: #1e2a3a; font-weight: 600; }
 
-.product-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fafc; border-radius: 12px; margin-bottom: 8px; border: 1px solid #edf0f3; }
-.product-img { width: 52px; height: 52px; border-radius: 10px; background: #eef1f5; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #97a5b5; flex-shrink: 0; overflow: hidden; }
-.product-img img { width: 100%; height: 100%; object-fit: cover; }
+.product-row, .payment-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fafc; border-radius: 12px; margin-bottom: 8px; border: 1px solid #edf0f3; }
+.product-img { width: 52px; height: 52px; border-radius: 10px; background: #eef1f5; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #97a5b5; flex-shrink: 0; }
 .product-info { flex: 1; min-width: 0; }
-.product-info h4 { font-size: 14px; font-weight: 700; color: #1e2a3a; margin-bottom: 3px; }
+.product-info h4 { font-size: 14px; font-weight: 700; }
 .product-info p { font-size: 12px; color: #64748b; }
 .price-tag { font-size: 13px; font-weight: 800; color: #16a34a; margin-top: 2px; }
 
-.payment-row { display: flex; align-items: center; gap: 12px; padding: 12px; background: #f8fafc; border-radius: 12px; margin-bottom: 8px; border: 1px solid #edf0f3; }
 .payment-ico { width: 44px; height: 44px; border-radius: 50%; background: #dcfce7; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-.payment-info { flex: 1; min-width: 0; }
-.payment-info h4 { font-size: 14px; font-weight: 700; color: #1e2a3a; margin-bottom: 3px; }
-.payment-info p { font-size: 12px; color: #64748b; }
 
 .inbox-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
 .dots-btn { background: #f0f2f5; border: 1px solid #e4e7ec; width: 40px; height: 40px; border-radius: 50%; font-size: 16px; color: #1e2a3a; display: flex; align-items: center; justify-content: center; position: relative; }
@@ -130,7 +165,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .dm-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; flex-shrink: 0; }
 .dm-avatar.broadcast { background: linear-gradient(135deg, #3b82f6, #2563eb); }
 .dm-info { flex: 1; min-width: 0; }
-.dm-info h4 { font-size: 14px; font-weight: 700; color: #1e2a3a; margin-bottom: 3px; }
+.dm-info h4 { font-size: 14px; font-weight: 700; }
 .dm-info p { font-size: 13px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dm-time { font-size: 11px; color: #94a3b8; margin-top: 4px; }
 .dm-check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #cbd5e1; background: #fff; display: none; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
@@ -150,105 +185,46 @@ button:active { transform: scale(0.95); opacity: 0.88; }
 .chat-back { background: transparent; border: none; font-size: 20px; padding: 4px; }
 .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; }
 .chat-avatar.broadcast { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-.chat-avatar.ai { background: linear-gradient(135deg, #ff6b00, #ea580c); }
 .chat-info { flex: 1; min-width: 0; }
 .chat-info h4 { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
 .chat-info span { font-size: 11px; color: #22c55e; font-weight: 600; }
 .chat-info span.grey { color: #94a3b8; }
 .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f5f7fa; }
-.bubble { max-width: 78%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; }
+.bubble { max-width: 78%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
 .bubble.user { background: #3b82f6; color: #fff; align-self: flex-start; border-bottom-left-radius: 4px; }
 .bubble.admin { background: #fff; color: #1e2a3a; align-self: flex-end; border-bottom-right-radius: 4px; }
 .bubble-time { font-size: 10px; opacity: 0.7; margin-top: 4px; }
 .chat-input-bar { display: flex; align-items: center; gap: 8px; background: #fff; padding: 10px 14px; border-top: 1px solid #e9ecef; }
 .chat-input-bar input { flex: 1; border: 1px solid #e4e7ec; background: #f5f7fa; padding: 13px 18px; border-radius: 24px; font-size: 14px; outline: none; }
 .chat-send-btn { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; border: none; padding: 13px 22px; border-radius: 24px; font-weight: 700; font-size: 14px; }
-
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 9998; display: none; align-items: center; justify-content: center; padding: 20px; }
-.modal-overlay.show { display: flex; }
-.modal-box { background: #fff; border-radius: 24px; padding: 24px; max-width: 460px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
-.modal-close-x { position: absolute; top: 16px; right: 16px; background: #f0f2f5; border: none; width: 36px; height: 36px; border-radius: 50%; font-size: 15px; color: #4b5563; display: flex; align-items: center; justify-content: center; }
-.modal-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; padding-right: 40px; }
-.modal-head .ico-circle { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; flex-shrink: 0; }
-.modal-head .ico-circle.green { background: #dcfce7; color: #16a34a; }
-.modal-head .ico-circle.red { background: #fee2e2; color: #dc2626; }
-.modal-head .ico-circle.purple { background: #f3e8ff; color: #8b5cf6; }
-.modal-head .head-txt { flex: 1; min-width: 0; }
-.modal-head h3 { font-size: 22px; font-weight: 800; color: #1e2a3a; margin-bottom: 4px; }
-.modal-head p { font-size: 13px; color: #7f8c8d; word-break: break-all; }
-.modal-label { font-size: 13px; color: #1e2a3a; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
-.choice-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
-.choice-card-big { background: #f8fafc; border: 2px solid #e4e7ec; border-radius: 18px; padding: 22px 12px; text-align: center; cursor: pointer; }
-.choice-card-big.selected { border-color: #1e2a3a; background: #f0f2f5; }
-.choice-card-big i { font-size: 34px; margin-bottom: 10px; display: block; }
-.choice-card-big h4 { font-size: 17px; font-weight: 800; color: #1e2a3a; margin-bottom: 4px; }
-.choice-card-big p { font-size: 12px; color: #7f8c8d; }
-.pack-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; max-height: 340px; overflow-y: auto; }
-.pack-row { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; background: #f8fafc; border: 2px solid #e4e7ec; border-radius: 14px; cursor: pointer; }
-.pack-row.selected { border-color: #16a34a; background: #dcfce7; }
-.pack-row .pack-name { font-size: 15px; font-weight: 700; color: #1e2a3a; }
-.pack-row .pack-val { font-size: 15px; font-weight: 800; color: #1e2a3a; }
-.btn-big { width: 100%; padding: 16px; border-radius: 60px; font-weight: 800; font-size: 15px; border: none; margin-bottom: 10px; }
-.btn-big.green { background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; }
-.btn-big.red { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
-.btn-big.orange { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
-.btn-big.grey { background: #f0f4f9; color: #1e2a3a; }
-.btn-big.blue { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; }
-.btn-big.purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: #fff; }
-.user-detail-head { text-align: center; padding-bottom: 20px; }
-.user-detail-avatar { width: 90px; height: 90px; border-radius: 50%; background: #1e2a3a; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 800; margin: 0 auto 14px; }
-.user-detail-head h3 { font-size: 22px; font-weight: 800; color: #1e2a3a; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
-.user-detail-head .status-pill { display: inline-block; padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
-.status-pill.active { background: #dcfce7; color: #16a34a; }
-.status-pill.banned { background: #fee2e2; color: #dc2626; }
-.status-pill.suspended { background: #fef3c7; color: #d97706; }
-.status-pill.deleted { background: #1e2a3a; color: #fff; }
-.detail-line { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f0f2f5; font-size: 14px; gap: 10px; }
-.detail-line .lbl { color: #7f8c8d; font-weight: 600; flex-shrink: 0; }
-.detail-line .val { color: #1e2a3a; font-weight: 700; text-align: right; word-break: break-word; }
-.toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: #1e2a3a; color: #fff; padding: 12px 22px; border-radius: 60px; font-size: 13px; font-weight: 600; z-index: 99999; display: none; }
-.toast.show { display: block; }
 </style>
 </head>
 <body>
 
-<div class="login-screen" id="loginScreen">
-  <div class="login-box">
-    <div class="icon"><i class="fas fa-shield-alt"></i></div>
-    <div class="logo">Lenidi</div>
-    <div class="subtitle">Admin Panel</div>
-    <h2>Welcome back 👑</h2>
-    <p>Enter your password to continue</p>
-    <input type="password" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter') doLogin()">
-    <button type="button" onclick="doLogin()">Log In</button>
-    <div class="login-error" id="loginError"></div>
-  </div>
-</div>
-
-<div class="admin-header" id="adminHeader" style="display:none;">
-  <button class="refresh-btn" id="refreshBtn" onclick="doRefresh()"><i class="fas fa-sync-alt"></i> Refresh</button>
+<div class="admin-header">
+  <button class="refresh-btn" onclick="toast('Refreshed')"><i class="fas fa-sync-alt"></i> Refresh</button>
   <div class="title">Admin Panel</div>
-  <button class="logout-btn" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Log out</button>
+  <button class="logout-btn" onclick="openModal('logoutModal')"><i class="fas fa-sign-out-alt"></i> Log out</button>
 </div>
 
-<div class="container" id="adminContainer" style="display:none;">
+<div class="container" id="mainContainer">
 
   <div class="stats-grid">
-    <div class="stat-card blue"><i class="fas fa-users stat-icon"></i><div class="stat-label">Users</div><div class="stat-value" id="statUsers">0</div><div class="stat-sub">Total</div></div>
-    <div class="stat-card green"><i class="fas fa-money-bill-wave stat-icon"></i><div class="stat-label">Revenue</div><div class="stat-value" id="statRevenue">GH₵0</div><div class="stat-sub">Total</div></div>
-    <div class="stat-card red"><i class="fas fa-flag stat-icon"></i><div class="stat-label">Reports</div><div class="stat-value" id="statReports">0</div><div class="stat-sub">Total</div></div>
+    <div class="stat-card blue"><i class="fas fa-users stat-icon"></i><div class="stat-label">Users</div><div class="stat-value" id="statUsers">10</div><div class="stat-sub">Total</div></div>
+    <div class="stat-card green"><i class="fas fa-money-bill-wave stat-icon"></i><div class="stat-label">Revenue</div><div class="stat-value">GH₵0</div><div class="stat-sub">Total</div></div>
+    <div class="stat-card red"><i class="fas fa-flag stat-icon"></i><div class="stat-label">Reports</div><div class="stat-value">1</div><div class="stat-sub">Total</div></div>
     <div class="stat-card purple"><i class="fas fa-box stat-icon"></i><div class="stat-label">Products</div><div class="stat-value" id="statProducts">0</div><div class="stat-sub">Total</div></div>
   </div>
 
   <div class="nav-grid" id="mainGrid">
-    <button class="nav-card blue" onclick="showPanel('users')"><div class="icon-wrap"><i class="fas fa-users"></i></div><div class="label">Users</div><div class="sub" id="subUsers">0 active</div></button>
-    <button class="nav-card red" onclick="showPanel('reports')"><div class="icon-wrap"><i class="fas fa-flag"></i></div><div class="label">Reports</div><div class="sub" id="subReports">0 pending</div></button>
-    <button class="nav-card purple" onclick="showPanel('products')"><div class="icon-wrap"><i class="fas fa-box"></i></div><div class="label">Products</div><div class="sub" id="subProducts">0 listed</div></button>
-    <button class="nav-card green" onclick="showPanel('payments')"><div class="icon-wrap"><i class="fas fa-money-bill-wave"></i></div><div class="label">Payments</div><div class="sub">Transactions</div></button>
-    <button class="nav-card orange" onclick="showPanel('ai')"><div class="icon-wrap"><i class="fas fa-robot"></i></div><div class="label">Admin AI</div><div class="sub">Chat + Commands</div></button>
-    <button class="nav-card slate" onclick="showPanel('deleted')"><div class="icon-wrap"><i class="fas fa-user-slash"></i></div><div class="label">Deleted</div><div class="sub" id="subDeleted">0 users</div></button>
-    <button class="nav-card blue2" onclick="showPanel('inbox')"><div class="icon-wrap"><i class="fas fa-inbox"></i></div><div class="label">Inbox</div><div class="sub" id="subInbox">0 broadcasts</div></button>
-    <button class="nav-card teal" onclick="showPanel('dms')"><div class="icon-wrap"><i class="fas fa-comments"></i></div><div class="label">DMs</div><div class="sub" id="subDMs">0 chats</div></button>
+    <button class="nav-card blue" onclick="showPanel('users')"><div class="icon-wrap"><i class="fas fa-users"></i></div><div class="label">Users</div><div class="sub">10 active</div></button>
+    <button class="nav-card red" onclick="showPanel('reports')"><div class="icon-wrap"><i class="fas fa-flag"></i></div><div class="label">Reports</div><div class="sub">1 pending</div></button>
+    <button class="nav-card purple" onclick="showPanel('products')"><div class="icon-wrap"><i class="fas fa-box"></i></div><div class="label">Products</div><div class="sub">0 listed</div></button>
+    <button class="nav-card green" onclick="showPanel('payments')"><div class="icon-wrap"><i class="fas fa-money-bill-wave"></i></div><div class="label">Payments</div><div class="sub">GH₵0</div></button>
+    <button class="nav-card orange" onclick="showPanel('ai')"><div class="icon-wrap"><i class="fas fa-robot"></i></div><div class="label">Admin AI</div><div class="sub">Commands</div></button>
+    <button class="nav-card slate" onclick="showPanel('deleted')"><div class="icon-wrap"><i class="fas fa-user-slash"></i></div><div class="label">Deleted</div><div class="sub">Users</div></button>
+    <button class="nav-card blue2" onclick="showPanel('inbox')"><div class="icon-wrap"><i class="fas fa-inbox"></i></div><div class="label">Inbox</div><div class="sub">Broadcasts</div></button>
+    <button class="nav-card teal" onclick="showPanel('dms')"><div class="icon-wrap"><i class="fas fa-comments"></i></div><div class="label">DMs</div><div class="sub">Chats</div></button>
     <button class="nav-card dark" onclick="showPanel('settings')"><div class="icon-wrap"><i class="fas fa-cog"></i></div><div class="label">Settings</div><div class="sub">Config</div></button>
   </div>
 
@@ -256,23 +232,29 @@ button:active { transform: scale(0.95); opacity: 0.88; }
     <button class="panel-back" onclick="showGrid()"><i class="fas fa-arrow-left"></i> Back</button>
     <div class="panel-box">
       <h2><i class="fas fa-users" style="color:#3b82f6;"></i> Users (<span id="userCount">0</span>)</h2>
-      <div id="usersList"><div class="loading">Loading users...</div></div>
+      <div id="usersList"></div>
     </div>
   </div>
 
   <div class="panel" id="panel-reports">
     <button class="panel-back" onclick="showGrid()"><i class="fas fa-arrow-left"></i> Back</button>
     <div class="panel-box">
-      <h2><i class="fas fa-flag" style="color:#ef4444;"></i> Reports (<span id="reportCount">0</span>)</h2>
-      <div id="reportsList"><div class="loading">Loading reports...</div></div>
+      <h2><i class="fas fa-flag" style="color:#ef4444;"></i> Reports (1)</h2>
+      <div class="report-row">
+        <div class="report-head">
+          <div class="ico"><i class="fas fa-flag"></i></div>
+          <div style="flex:1;"><h4>Report against fakeguy@example.com</h4><p>By: buyer@example.com · 5 min ago</p></div>
+        </div>
+        <div class="reason-box"><div class="reason-label">Reason</div><div class="reason-text">Scam — took my money and blocked me</div></div>
+      </div>
     </div>
   </div>
 
   <div class="panel" id="panel-products">
     <button class="panel-back" onclick="showGrid()"><i class="fas fa-arrow-left"></i> Back</button>
     <div class="panel-box">
-      <h2><i class="fas fa-box" style="color:#8b5cf6;"></i> Products (<span id="productCount">0</span>)</h2>
-      <div id="productsList"><div class="loading">Loading products...</div></div>
+      <h2><i class="fas fa-box" style="color:#8b5cf6;"></i> Products (0)</h2>
+      <p style="text-align:center;color:#94a3b8;padding:40px;">No products yet</p>
     </div>
   </div>
 
@@ -280,26 +262,21 @@ button:active { transform: scale(0.95); opacity: 0.88; }
     <button class="panel-back" onclick="showGrid()"><i class="fas fa-arrow-left"></i> Back</button>
     <div class="panel-box">
       <h2><i class="fas fa-money-bill-wave" style="color:#16a34a;"></i> Payments</h2>
-      <div id="paymentsList"><div class="loading">Loading payments...</div></div>
+      <p style="text-align:center;color:#94a3b8;padding:40px;">No payments yet</p>
     </div>
   </div>
 
   <div class="panel" id="panel-ai">
     <button class="panel-back" onclick="showGrid()"><i class="fas fa-arrow-left"></i> Back</button>
-    <div class="panel-box" style="padding:0; overflow:hidden;">
-      <div style="background:#ff6b00; color:#fff; padding:14px 18px; display:flex; align-items:center; gap:12px;">
-        <i class="fas fa-robot" style="font-size:22px;"></i>
-        <div style="flex:1;">
-          <div style="font-size:15px; font-weight:800;">Admin AI</div>
-          <div style="font-size:11px; opacity:0.9;">Talk to me in plain English</div>
-        </div>
+    <div class="panel-box">
+      <h2><i class="fas fa-robot" style="color:#ff6b00;"></i> Admin AI</h2>
+      <div class="chat-messages" id="aiMessages" style="height:340px;border-radius:12px;background:#f5f7fa;">
+        <div class="bubble admin" style="background:#1e2a3a;color:#fff;align-self:flex-end;">/ban_dave@gmail.com</div>
+        <div class="bubble admin" style="background:#fff;color:#1e2a3a;align-self:flex-start;border-bottom-left-radius:4px;">⛔ Banned dave@gmail.com</div>
       </div>
-      <div class="chat-messages" id="aiMessages" style="height:420px;">
-        <div class="bubble admin" style="background:#fff; color:#1e2a3a; align-self:flex-start; border-bottom-left-radius:4px;">Hi 👋 I'm your Admin AI. Try:<br>• "How many users do I have?"<br>• "Ban sam@gmail.com"<br>• "Gift VIP to dave@gmail.com"<br>• "Send a broadcast saying Welcome to Lenidi!"</div>
-      </div>
-      <div class="chat-input-bar">
-        <input id="aiInput" placeholder="Ask or command..." onkeydown="if(event.key==='Enter')sendAI()">
-        <button class="chat-send-btn" style="background:#ff6b00;" onclick="sendAI()">Send</button>
+      <div class="chat-input-bar" style="margin-top:10px;border-radius:14px;">
+        <input id="aiInput" placeholder="Type command..." onkeydown="if(event.key==='Enter')sendAI()">
+        <button class="chat-send-btn" style="background:#1e2a3a;" onclick="sendAI()">Send</button>
       </div>
     </div>
   </div>
@@ -308,7 +285,7 @@ button:active { transform: scale(0.95); opacity: 0.88; }
     <button class="panel-back" onclick="showGrid()"><i class="fas fa-arrow-left"></i> Back</button>
     <div class="panel-box">
       <h2><i class="fas fa-user-slash" style="color:#64748b;"></i> Deleted Users (<span id="deletedCount">0</span>)</h2>
-      <div id="deletedList"><div class="loading">Loading deleted users...</div></div>
+      <div id="deletedList"></div>
     </div>
   </div>
 
@@ -316,14 +293,14 @@ button:active { transform: scale(0.95); opacity: 0.88; }
     <button class="panel-back" onclick="showGrid()"><i class="fas fa-arrow-left"></i> Back</button>
     <div class="panel-box" style="position:relative;">
       <div class="inbox-header">
-        <h2><i class="fas fa-inbox" style="color:#3b82f6;"></i> Inbox (<span id="inboxCount">0</span>)</h2>
+        <h2><i class="fas fa-inbox" style="color:#3b82f6;"></i> Inbox (<span id="inboxCount">3</span>)</h2>
         <button class="dots-btn" onclick="toggleDotsMenu('inboxMenu')"><i class="fas fa-ellipsis-v"></i></button>
         <div class="dots-menu" id="inboxMenu">
           <div class="dots-menu-item" onclick="closeMenus(); openBroadcast()"><i class="fas fa-envelope"></i> Message</div>
           <div class="dots-menu-item danger" onclick="closeMenus(); toggleDeleteMode('inbox')"><i class="fas fa-trash"></i> Delete</div>
         </div>
       </div>
-      <div id="inboxList"><div class="loading">Loading broadcasts...</div></div>
+      <div id="inboxList"></div>
       <div class="delete-bar" id="deleteBar-inbox">
         <button class="btn-cancel" onclick="cancelDelete('inbox')">Cancel</button>
         <button class="btn-delete" onclick="deleteSelected('inbox')">Delete Selected</button>
@@ -335,10 +312,21 @@ button:active { transform: scale(0.95); opacity: 0.88; }
     <button class="panel-back" onclick="showGrid()"><i class="fas fa-arrow-left"></i> Back</button>
     <div class="panel-box" style="position:relative;">
       <div class="inbox-header">
-        <h2><i class="fas fa-comments" style="color:#14b8a6;"></i> DMs (<span id="dmsCount">0</span>)</h2>
+        <h2><i class="fas fa-comments" style="color:#14b8a6;"></i> DMs (2)</h2>
         <button class="dots-btn" onclick="toggleDeleteMode('dms')"><i class="fas fa-ellipsis-v"></i></button>
       </div>
-      <div id="dmsList"><div class="loading">Loading DMs...</div></div>
+      <div id="dmsList">
+        <div class="dm-row" onclick="openChat('Dave','dave@gmail.com','D')">
+          <div class="dm-check" onclick="event.stopPropagation(); toggleCheck(this)"></div>
+          <div class="dm-avatar">D</div>
+          <div class="dm-info"><h4>Dave</h4><p>Hi admin, my ad was flagged, can you check?</p><div class="dm-time">10 min ago</div></div>
+        </div>
+        <div class="dm-row" onclick="openChat('Ama','ama@example.com','A')">
+          <div class="dm-check" onclick="event.stopPropagation(); toggleCheck(this)"></div>
+          <div class="dm-avatar" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);">A</div>
+          <div class="dm-info"><h4>Ama</h4><p>Thank you for the VIP!</p><div class="dm-time">1 hour ago</div></div>
+        </div>
+      </div>
       <div class="delete-bar" id="deleteBar-dms">
         <button class="btn-cancel" onclick="cancelDelete('dms')">Cancel</button>
         <button class="btn-delete" onclick="deleteSelected('dms')">Delete Selected</button>
@@ -353,23 +341,19 @@ button:active { transform: scale(0.95); opacity: 0.88; }
       <div class="user-row">
         <div class="user-avatar" style="background:#1e2a3a;"><i class="fas fa-key"></i></div>
         <div class="user-info"><h4>Change admin password</h4><p>Update your login password</p></div>
-        <button class="mini-btn view" style="width:auto;padding:8px 16px;border-radius:40px;font-weight:700;" onclick="openChangePassword()">Change</button>
+        <button class="mini-btn view" style="width:auto;padding:8px 16px;border-radius:40px;font-weight:700;" onclick="openModal('pwModal')">Change</button>
       </div>
       <div class="user-row">
         <div class="user-avatar" style="background:#ef4444;"><i class="fas fa-broom"></i></div>
-        <div class="user-info"><h4>Clear payments</h4><p>Wipe payment records</p></div>
-        <button class="mini-btn wipe" style="width:auto;padding:8px 16px;border-radius:40px;font-weight:700;" onclick="confirmClearData()">Clear</button>
-      </div>
-      <div class="user-row">
-        <div class="user-avatar" style="background:#ff6b00;"><i class="fas fa-robot"></i></div>
-        <div class="user-info"><h4>Clear Admin AI chat</h4><p>Wipe AI memory + chat</p></div>
-        <button class="mini-btn wipe" style="width:auto;padding:8px 16px;border-radius:40px;font-weight:700;" onclick="clearAdminAI()">Clear</button>
+        <div class="user-info"><h4>Clear payments + AI chats</h4><p>Wipe payment records and AI history</p></div>
+        <button class="mini-btn wipe" style="width:auto;padding:8px 16px;border-radius:40px;font-weight:700;" onclick="openModal('clearModal')">Clear</button>
       </div>
     </div>
   </div>
 
 </div>
 
+<!-- CHAT PAGE -->
 <div class="chat-page" id="chatPage">
   <div class="chat-header">
     <button class="chat-back" onclick="closeChat()"><i class="fas fa-arrow-left"></i></button>
@@ -381,11 +365,12 @@ button:active { transform: scale(0.95); opacity: 0.88; }
   </div>
   <div class="chat-messages" id="chatMessages"></div>
   <div class="chat-input-bar">
-    <input type="text" id="chatInput" placeholder="Type..." onkeydown="if(event.key==='Enter')sendMsg()">
+    <input type="text" id="chatInput" placeholder="Type...">
     <button class="chat-send-btn" onclick="sendMsg()">Send</button>
   </div>
 </div>
 
+<!-- BROADCAST COMPOSER -->
 <div class="chat-page" id="broadcastPage">
   <div class="chat-header">
     <button class="chat-back" onclick="closeBroadcast()"><i class="fas fa-arrow-left"></i></button>
@@ -396,50 +381,75 @@ button:active { transform: scale(0.95); opacity: 0.88; }
     </div>
   </div>
   <div class="chat-messages" id="broadcastMessages">
-    <div class="empty" style="color:#94a3b8;">Type a message below → Send → it goes to all users 📢</div>
+    <div class="empty-note">Type a message below → Send → it goes to all users 📢</div>
   </div>
   <div class="chat-input-bar">
-    <input type="text" id="broadcastInput" placeholder="Write your broadcast..." onkeydown="if(event.key==='Enter')sendBroadcast()">
+    <input type="text" id="broadcastInput" placeholder="Write your broadcast...">
     <button class="chat-send-btn" onclick="sendBroadcast()">Send</button>
   </div>
 </div>
 
-<div class="modal-overlay" id="userModal"><div class="modal-box" id="userModalContent"></div></div>
+<!-- MODALS -->
+<div class="modal-overlay" id="logoutModal"><div class="modal-box">
+  <h3>Log out?</h3><p style="margin-bottom:20px;color:#7f8c8d;">You'll be signed out.</p>
+  <button class="btn-big grey" onclick="closeModal('logoutModal')">Cancel</button>
+  <button class="btn-big red" onclick="closeModal('logoutModal'); toast('Logged out')">Yes, log out</button>
+</div></div>
+
+<div class="modal-overlay" id="pwModal"><div class="modal-box">
+  <h3>Change Password</h3>
+  <p style="margin-bottom:16px;color:#7f8c8d;">Set a new admin password</p>
+  <input type="password" placeholder="Current password" style="width:100%;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:12px;outline:none;font-size:14px;">
+  <input type="password" placeholder="New password" style="width:100%;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:12px;outline:none;font-size:14px;">
+  <input type="password" placeholder="Confirm new password" style="width:100%;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:16px;outline:none;font-size:14px;">
+  <button class="btn-big grey" onclick="closeModal('pwModal')">Cancel</button>
+  <button class="btn-big green" onclick="closeModal('pwModal'); toast('✅ Password updated')">Update Password</button>
+</div></div>
+
+<div class="modal-overlay" id="clearModal"><div class="modal-box">
+  <h3>Clear data?</h3>
+  <p style="margin-bottom:20px;color:#7f8c8d;">This will clear <b>payments</b> and <b>AI chats</b>. Users, products, and reports won't be affected.</p>
+  <button class="btn-big grey" onclick="closeModal('clearModal')">No</button>
+  <button class="btn-big red" onclick="closeModal('clearModal'); toast('🗑️ Cleared')">Yes, clear</button>
+</div></div>
+
 <div class="modal-overlay" id="titleModal"><div class="modal-box">
-  <h3 style="font-size:22px;font-weight:800;margin-bottom:6px;">Message Title</h3>
-  <p style="font-size:13px;color:#7f8c8d;margin-bottom:16px;">This shows at the top of your broadcast</p>
+  <h3>Message Title</h3>
+  <p style="margin-bottom:16px;color:#7f8c8d;">This shows at the top of your broadcast</p>
   <input type="text" id="titleInput" placeholder="e.g. Welcome to Lenidi!" maxlength="60" style="width:100%;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:16px;outline:none;font-size:14px;">
   <button class="btn-big grey" onclick="closeModal('titleModal')">Cancel</button>
   <button class="btn-big blue" onclick="saveTitle()">Save</button>
 </div></div>
-<div class="modal-overlay" id="clearModal"><div class="modal-box">
-  <h3 style="font-size:22px;font-weight:800;margin-bottom:6px;">Clear payments?</h3>
-  <p style="font-size:13px;color:#7f8c8d;margin-bottom:16px;">Wipes payment records.</p>
-  <button class="btn-big grey" onclick="closeModal('clearModal')">No</button>
-  <button class="btn-big red" onclick="doClearData()">Yes, clear</button>
-</div></div>
-<div class="modal-overlay" id="pwModal"><div class="modal-box">
-  <h3 style="font-size:22px;font-weight:800;margin-bottom:6px;">Change Password</h3>
-  <p style="font-size:13px;color:#7f8c8d;margin-bottom:16px;">Set a new admin password</p>
-  <input type="password" id="cpCurrent" placeholder="Current password" style="width:100%;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:12px;outline:none;font-size:14px;">
-  <input type="password" id="cpNew" placeholder="New password" style="width:100%;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:12px;outline:none;font-size:14px;">
-  <input type="password" id="cpConfirm" placeholder="Confirm new password" style="width:100%;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px;margin-bottom:16px;outline:none;font-size:14px;">
-  <button class="btn-big grey" onclick="closeModal('pwModal')">Cancel</button>
-  <button class="btn-big green" onclick="saveNewPassword()">Update Password</button>
-</div></div>
+
+<div class="modal-overlay" id="userModal"><div class="modal-box" id="userModalContent"></div></div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const BACKEND_URL = "https://lenidi-backend.onrender.com";
-let ADMIN_PASSWORD = localStorage.getItem('lenidi_admin_pw') || "Cr@zyMonkey2";
-let users = [], reports = [], products = [], deletedUsers = [], broadcasts = [], dms = [], payments = [];
+let users = [
+  { name: 'Stella Adane', email: 'stellaadanelci@gmail.com', phone: '0247773026', plan: 'vip', status: 'active', boosts: 500, lastActive: '20/09/2026, 19:10:39' },
+  { name: 'David Adane', email: 'davidyeboah@gmail.com', phone: '0544840240', plan: 'vip', status: 'active', boosts: 550, lastActive: '20/09/2026, 12:00:00' },
+  { name: 'Drake', email: 'drake@gmail.com', phone: '0244000003', plan: 'vip', status: 'banned', boosts: 200, lastActive: '19/09/2026' },
+  { name: 'dave', email: 'dave@gamil.com', phone: '0200000000', plan: 'vip', status: 'banned', boosts: 100, lastActive: '19/09/2026' },
+  { name: 'Sam', email: 'sam@gmail.com', phone: '—', plan: 'free', status: 'banned', boosts: 0, lastActive: '18/09/2026' },
+  { name: 'Kofi', email: 'kofi@example.com', phone: '0244000002', plan: 'pro', status: 'active', boosts: 45, lastActive: '17/09/2026' },
+  { name: 'Ama', email: 'ama@example.com', phone: '0244000001', plan: 'premium', status: 'active', boosts: 250, lastActive: '16/09/2026' },
+  { name: 'Yaw', email: 'yaw@example.com', phone: '0244000010', plan: 'plus', status: 'active', boosts: 30, lastActive: '15/09/2026' },
+  { name: 'Akosua', email: 'akosua@example.com', phone: '0244000011', plan: 'free', status: 'active', boosts: 5, lastActive: '14/09/2026' },
+  { name: 'Kwame', email: 'kwame@example.com', phone: '0244000012', plan: 'free', status: 'suspended', boosts: 0, lastActive: '13/09/2026' }
+];
+let deletedUsers = [];
+let broadcasts = [
+  { title: 'Welcome to Lenidi!', body: 'Thanks for joining. Trust verified sellers to stay safe.', time: '2 hours ago' },
+  { title: 'New feature: Clothing', body: 'You can now sell clothes on Lenidi!', time: 'Yesterday' },
+  { title: 'VIP sale is live!', body: 'Get VIP for GH₵700 this week only.', time: '3 days ago' }
+];
 let deleteMode = { inbox: false, dms: false };
-let currentUserId = null, currentUserEmail = null, currentUserName = null;
-let giftType = null, giftValue = null, banAction = null;
 let currentBroadcastTitle = '';
-let pendingDeleteIds = { inbox: [], dms: [] };
-let chatPollRef = null;
+let currentUserId = null;
+let giftType = null;
+let giftValue = null;
+let banAction = null;
 
 const BOOST_PACKS = [20, 40, 60, 80, 100, 150, 200, 250, 300];
 const SUB_PACKS = [
@@ -448,207 +458,79 @@ const SUB_PACKS = [
   { id: 'premium', name: 'Premium', price: 'GHC 699' },
   { id: 'vip', name: 'VIP', price: 'GHC 999' }
 ];
+const daveChat = [
+  { side: 'user', text: 'Hi admin, my ad was flagged, can you check?', time: '10:15 AM' },
+  { side: 'admin', text: 'Sure Dave, let me check.', time: '10:18 AM' }
+];
+const amaChat = [
+  { side: 'user', text: 'Thank you for the VIP!', time: '9:00 AM' },
+  { side: 'admin', text: "You're welcome Ama!", time: '9:05 AM' }
+];
 
-function doLogin() {
-  const pw = document.getElementById('pwInput').value;
-  const err = document.getElementById('loginError');
-  err.textContent = '';
-  if (pw === ADMIN_PASSWORD) {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminHeader').style.display = 'flex';
-    document.getElementById('adminContainer').style.display = 'block';
-    // Clear AI chat from server
-    fetch(BACKEND_URL + '/admin/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clearHistory: true }) }).catch(() => {});
-    // Reset AI UI
-    const aiBox = document.getElementById('aiMessages');
-    if (aiBox) aiBox.innerHTML = '<div class="bubble admin" style="background:#fff; color:#1e2a3a; align-self:flex-start; border-bottom-left-radius:4px;">Hi 👋 I\'m your Admin AI. Try:<br>• "How many users do I have?"<br>• "Ban sam@gmail.com"<br>• "Gift VIP to dave@gmail.com"<br>• "Send a broadcast saying Welcome to Lenidi!"</div>';
-    loadAll();
-    if (window._adminInterval) clearInterval(window._adminInterval);
-    window._adminInterval = setInterval(loadAll, 15000);
-  } else {
-    err.textContent = 'Wrong password. Try again.';
-    document.getElementById('pwInput').value = '';
-  }
-}
-function doLogout() {
-  if (window._adminInterval) clearInterval(window._adminInterval);
-  fetch(BACKEND_URL + '/admin/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clearHistory: true }) }).catch(() => {});
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('adminHeader').style.display = 'none';
-  document.getElementById('adminContainer').style.display = 'none';
-  document.getElementById('pwInput').value = '';
-}
-async function loadAll() {
-  try {
-    const [u, r, p, d, b, dm, pay] = await Promise.all([
-      fetch(BACKEND_URL + '/admin/users').then(x => x.json()).catch(() => []),
-      fetch(BACKEND_URL + '/admin/reports').then(x => x.json()).catch(() => []),
-      fetch(BACKEND_URL + '/products').then(x => x.json()).catch(() => []),
-      fetch(BACKEND_URL + '/admin/deleted-users').then(x => x.json()).catch(() => []),
-      fetch(BACKEND_URL + '/broadcasts').then(x => x.json()).catch(() => []),
-      fetch(BACKEND_URL + '/dm/conversations').then(x => x.json()).catch(() => []),
-      fetch(BACKEND_URL + '/admin/payments').then(x => x.json()).catch(() => [])
-    ]);
-    users = Array.isArray(u) ? u : [];
-    reports = Array.isArray(r) ? r : [];
-    products = Array.isArray(p) ? p : [];
-    deletedUsers = Array.isArray(d) ? d : [];
-    broadcasts = Array.isArray(b) ? b : [];
-    dms = Array.isArray(dm) ? dm : [];
-    payments = Array.isArray(pay) ? pay : [];
-    renderAll();
-  } catch (e) { toast('Failed to load'); }
-}
-function doRefresh() {
-  const btn = document.getElementById('refreshBtn');
-  btn.classList.add('spinning');
-  loadAll().then(() => { btn.classList.remove('spinning'); toast('✅ Refreshed'); });
-}
-function renderAll() {
-  document.getElementById('statUsers').textContent = users.length;
-  document.getElementById('statProducts').textContent = products.length;
-  document.getElementById('statReports').textContent = reports.length;
-  let rev = 0; payments.forEach(p => { if (p.status === 'paid' && p.amount) rev += Number(p.amount); });
-  document.getElementById('statRevenue').textContent = rev >= 1000 ? 'GH₵' + (rev/1000).toFixed(1) + 'K' : 'GH₵' + rev;
-  document.getElementById('subUsers').textContent = users.length + ' active';
-  document.getElementById('subProducts').textContent = products.length + ' listed';
-  document.getElementById('subReports').textContent = reports.length + ' pending';
-  document.getElementById('subDeleted').textContent = deletedUsers.length + ' users';
-  document.getElementById('subInbox').textContent = broadcasts.length + ' broadcasts';
-  document.getElementById('subDMs').textContent = dms.length + ' chats';
-  document.getElementById('userCount').textContent = users.length;
-  document.getElementById('productCount').textContent = products.length;
-  document.getElementById('reportCount').textContent = reports.length;
-  document.getElementById('deletedCount').textContent = deletedUsers.length;
-  document.getElementById('inboxCount').textContent = broadcasts.length;
-  document.getElementById('dmsCount').textContent = dms.length;
-  renderUsers(); renderReports(); renderProducts(); renderDeleted(); renderInbox(); renderDMs(); renderPayments();
-}
-
+// ============ RENDER USERS ============
 function renderUsers() {
   const el = document.getElementById('usersList');
-  if (!users.length) { el.innerHTML = '<div class="empty">No users yet</div>'; return; }
   el.innerHTML = users.map((u, i) => {
-    const initial = (u.name || u.email).charAt(0).toUpperCase();
-    const status = u.status || 'active';
-    const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
-    const plan = u.plan || 'free';
+    const initial = u.name.charAt(0).toUpperCase();
+    const statusLabel = u.status.charAt(0).toUpperCase() + u.status.slice(1);
     return '<div class="user-row">' +
       '<div class="user-avatar">' + initial + '</div>' +
-      '<div class="user-info"><h4>' + (u.name || 'User') + ' <span class="badge-plan ' + plan + '">' + plan.toUpperCase() + '</span> <span class="badge-status ' + status + '">' + statusLabel + '</span></h4><p>' + (u.email || '') + ' · ' + (u.phone || 'no phone') + ' · ' + (u.boosts || 0) + ' boosts</p></div>' +
-      '<div class="user-actions">' +
-        '<button class="mini-btn msg" onclick="openUserChat(\'' + u.email + '\')" title="Message"><i class="fas fa-comment"></i></button>' +
-        '<button class="mini-btn gift" onclick="openGift(' + i + ')" title="Gift"><i class="fas fa-gift"></i></button>' +
-        '<button class="mini-btn ban" onclick="openBan(' + i + ')" title="Ban"><i class="fas fa-ban"></i></button>' +
-        '<button class="mini-btn view" onclick="openUserDetail(' + i + ')" title="View"><i class="fas fa-eye"></i></button>' +
-        '<button class="mini-btn del" onclick="confirmDeleteUser(' + i + ')" title="Delete"><i class="fas fa-trash"></i></button>' +
-      '</div></div>';
-  }).join('');
-}
-
-function renderReports() {
-  const el = document.getElementById('reportsList');
-  if (!reports.length) { el.innerHTML = '<div class="empty">No reports 🎉</div>'; return; }
-  el.innerHTML = reports.map(r => {
-    const date = r.created_at ? new Date(r.created_at).toLocaleString() : '';
-    return '<div class="report-row">' +
-      '<div class="report-head">' +
-        '<div class="ico"><i class="fas fa-flag"></i></div>' +
-        '<div class="txt"><h4>Report against ' + (r.reported_email || '?') + '</h4><p>By: ' + (r.reporter_email || '?') + ' · ' + date + '</p></div>' +
-        '<div class="report-actions">' +
-          '<button class="mini-btn ban" onclick="openBanByEmail(\'' + (r.reported_email || '') + '\')"><i class="fas fa-ban"></i></button>' +
-          '<button class="mini-btn del" onclick="openDeleteByEmail(\'' + (r.reported_email || '') + '\')"><i class="fas fa-trash"></i></button>' +
-        '</div>' +
+      '<div class="user-info">' +
+        '<h4>' + u.name + ' <span class="badge-plan ' + u.plan + '">' + u.plan.toUpperCase() + '</span> <span class="badge-status ' + u.status + '">' + statusLabel + '</span></h4>' +
+        '<p>' + u.email + ' · ' + (u.phone || 'no phone') + ' · ' + u.boosts + ' boosts</p>' +
       '</div>' +
-      '<div class="reason-box"><div class="reason-label">Reason</div><div class="reason-text">' + (r.reason || 'No reason') + '</div></div>' +
+      '<div class="user-actions">' +
+        '<button class="mini-btn gift" onclick="openGift(' + i + ')"><i class="fas fa-gift"></i></button>' +
+        '<button class="mini-btn ban" onclick="openBan(' + i + ')"><i class="fas fa-ban"></i></button>' +
+        '<button class="mini-btn view" onclick="openUserDetail(' + i + ')"><i class="fas fa-eye"></i></button>' +
+        '<button class="mini-btn del" onclick="confirmDeleteUser(' + i + ')"><i class="fas fa-trash"></i></button>' +
+      '</div>' +
     '</div>';
   }).join('');
+  document.getElementById('userCount').textContent = users.length;
+  document.getElementById('statUsers').textContent = users.length;
 }
-
-function renderProducts() {
-  const el = document.getElementById('productsList');
-  if (!products.length) { el.innerHTML = '<div class="empty">No products yet</div>'; return; }
-  el.innerHTML = products.map(p => {
-    const firstPhoto = (p.photos && p.photos.length) ? p.photos[0] : '';
-    const imgContent = firstPhoto ? '<img src="' + firstPhoto + '" alt="">' : '<i class="fas fa-box"></i>';
-    return '<div class="product-row">' +
-      '<div class="product-img">' + imgContent + '</div>' +
-      '<div class="product-info"><h4>' + (p.title || 'Product') + '</h4><p>' + (p.seller_name || 'Seller') + ' · ' + (p.location || '—') + ' · ' + (p.category || '—') + '</p><div class="price-tag">' + (p.price || '') + '</div></div>' +
-      '<button class="mini-btn wipe" onclick="confirmDeleteProduct(' + p.id + ')" title="Delete"><i class="fas fa-trash"></i></button>' +
-    '</div>';
-  }).join('');
-}
+renderUsers();
 
 function renderDeleted() {
   const el = document.getElementById('deletedList');
-  if (!deletedUsers.length) { el.innerHTML = '<div class="empty">No deleted users</div>'; return; }
-  el.innerHTML = deletedUsers.map((u, i) => {
-    const initial = (u.name || u.email).charAt(0).toUpperCase();
-    const dt = u.original_deleted_at ? new Date(u.original_deleted_at).toLocaleString() : 'Unknown';
-    return '<div class="user-row" style="background:#f1f5f9;">' +
-      '<div class="user-avatar" style="background:#64748b;">' + initial + '</div>' +
-      '<div class="user-info"><h4>' + (u.name || 'User') + ' <span class="badge-status deleted">Deleted</span></h4><p>' + (u.email || '') + ' · ' + dt + '</p></div>' +
+  if (!deletedUsers.length) { el.innerHTML = '<p style="text-align:center;color:#94a3b8;padding:40px;">No deleted users</p>'; document.getElementById('deletedCount').textContent = 0; return; }
+  el.innerHTML = deletedUsers.map((u, i) =>
+    '<div class="user-row" style="background:#f1f5f9;">' +
+      '<div class="user-avatar" style="background:#64748b;">' + u.name.charAt(0).toUpperCase() + '</div>' +
+      '<div class="user-info"><h4>' + u.name + ' <span class="badge-status deleted">Deleted</span></h4><p>' + u.email + ' · ' + u.deletedAt + '</p></div>' +
       '<div class="user-actions">' +
-        '<button class="mini-btn restore" onclick="restoreUser(' + i + ')" title="Restore"><i class="fas fa-undo"></i></button>' +
-        '<button class="mini-btn wipe" onclick="confirmWipe(' + i + ')" title="Wipe forever"><i class="fas fa-times"></i></button>' +
-      '</div></div>';
-  }).join('');
+        '<button class="mini-btn restore" onclick="restoreUser(' + i + ')"><i class="fas fa-undo"></i></button>' +
+        '<button class="mini-btn wipe" onclick="confirmWipe(' + i + ')"><i class="fas fa-times"></i></button>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+  document.getElementById('deletedCount').textContent = deletedUsers.length;
 }
+renderDeleted();
 
 function renderInbox() {
   const el = document.getElementById('inboxList');
-  if (!broadcasts.length) { el.innerHTML = '<div class="empty">No broadcasts yet. Tap ⋮ → Message to send one.</div>'; return; }
-  el.innerHTML = broadcasts.map(b => {
-    const dt = b.created_at ? new Date(b.created_at).toLocaleString() : '';
-    return '<div class="dm-row" onclick="openBroadcastView(' + b.id + ')">' +
-      '<div class="dm-check" onclick="event.stopPropagation(); toggleCheck(this, \'inbox\', ' + b.id + ')"></div>' +
+  el.innerHTML = broadcasts.map((b, i) =>
+    '<div class="dm-row" onclick="openBroadcastView(' + i + ')">' +
+      '<div class="dm-check" onclick="event.stopPropagation(); toggleCheck(this)"></div>' +
       '<div class="dm-avatar broadcast"><i class="fas fa-bullhorn"></i></div>' +
-      '<div class="dm-info"><h4>' + (b.title || 'Broadcast') + '</h4><p>' + (b.body || '') + '</p><div class="dm-time">' + dt + '</div></div>' +
-    '</div>';
-  }).join('');
+      '<div class="dm-info"><h4>' + b.title + '</h4><p>' + b.body + '</p><div class="dm-time">' + b.time + '</div></div>' +
+    '</div>'
+  ).join('');
+  document.getElementById('inboxCount').textContent = broadcasts.length;
 }
+renderInbox();
 
-function renderDMs() {
-  const el = document.getElementById('dmsList');
-  const seen = {};
-  const combined = [];
-  dms.forEach(d => { seen[d.user_email] = true; combined.push(d); });
-  users.forEach(u => {
-    if (!seen[u.email]) combined.push({ user_email: u.email, last_body: 'Tap to message', last_sender: 'system', last_at: null, name: u.name });
-  });
-  if (!combined.length) { el.innerHTML = '<div class="empty">No users yet</div>'; return; }
-  el.innerHTML = combined.map(d => {
-    const user = users.find(u => u.email === d.user_email);
-    const name = d.name || (user && user.name) || d.user_email.split('@')[0];
-    const initial = name.charAt(0).toUpperCase();
-    const dt = d.last_at ? new Date(d.last_at).toLocaleString() : '';
-    return '<div class="dm-row" onclick="openUserChat(\'' + d.user_email + '\')">' +
-      '<div class="dm-check" onclick="event.stopPropagation(); toggleCheck(this, \'dm\', \'' + d.user_email + '\')"></div>' +
-      '<div class="dm-avatar">' + initial + '</div>' +
-      '<div class="dm-info"><h4>' + name + '</h4><p>' + (d.last_body || 'No messages') + '</p><div class="dm-time">' + dt + '</div></div>' +
-    '</div>';
-  }).join('');
-}
-
-function renderPayments() {
-  const el = document.getElementById('paymentsList');
-  if (!payments.length) { el.innerHTML = '<div class="empty">No payments yet</div>'; return; }
-  el.innerHTML = payments.map(p => {
-    const dt = p.created_at ? new Date(p.created_at).toLocaleString() : '';
-    const badge = p.status === 'paid' ? '<span class="badge-status active">PAID</span>' : '<span class="badge-status suspended">PENDING</span>';
-    return '<div class="payment-row"><div class="payment-ico"><i class="fas fa-check"></i></div><div class="payment-info"><h4>GH₵' + (p.amount || 0) + ' · ' + (p.type || '') + ' ' + badge + '</h4><p>' + (p.email || '') + ' · ' + (p.reference || '') + ' · ' + dt + '</p></div></div>';
-  }).join('');
-}
-
+// ============ NAV ============
 function showPanel(id) {
   document.getElementById('mainGrid').style.display = 'none';
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + id).classList.add('active');
-  document.getElementById('adminContainer').style.display = 'block';
+  document.getElementById('mainContainer').style.display = 'block';
   document.getElementById('chatPage').classList.remove('active');
   document.getElementById('broadcastPage').classList.remove('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (id === 'ai') setTimeout(() => document.getElementById('aiInput').focus(), 200);
 }
 function showGrid() {
   document.getElementById('mainGrid').style.display = 'grid';
@@ -657,131 +539,116 @@ function showGrid() {
   document.getElementById('broadcastPage').classList.remove('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
-function toggleDotsMenu(id) { document.querySelectorAll('.dots-menu').forEach(m => { if (m.id !== id) m.classList.remove('show'); }); document.getElementById(id).classList.toggle('show'); }
+function toggleDotsMenu(id) {
+  document.querySelectorAll('.dots-menu').forEach(m => { if (m.id !== id) m.classList.remove('show'); });
+  document.getElementById(id).classList.toggle('show');
+}
 function closeMenus() { document.querySelectorAll('.dots-menu').forEach(m => m.classList.remove('show')); }
 
-// ===== ADMIN AI =====
-async function sendAI() {
-  const input = document.getElementById('aiInput');
-  const text = input.value.trim();
-  if (!text) return;
-  const box = document.getElementById('aiMessages');
-  box.innerHTML += '<div class="bubble user">' + text.replace(/</g, '&lt;') + '</div>';
-  input.value = '';
-  box.scrollTop = box.scrollHeight;
-  const typing = document.createElement('div');
-  typing.className = 'bubble admin';
-  typing.id = 'aiTyping';
-  typing.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="color:#ff6b00;"></i> Thinking...';
-  box.appendChild(typing);
-  box.scrollTop = box.scrollHeight;
-  try {
-    const res = await fetch(BACKEND_URL + '/admin/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text }) }).then(r => r.json());
-    const t = document.getElementById('aiTyping'); if (t) t.remove();
-    let reply = res.reply || 'No reply';
-    if (res.actionResults && res.actionResults.length) {
-      reply += '\n\n' + res.actionResults.join('\n');
-    }
-    box.innerHTML += '<div class="bubble admin">' + reply.replace(/\n/g, '<br>') + '</div>';
-    box.scrollTop = box.scrollHeight;
-    if (res.hasAction) loadAll();
-  } catch (e) {
-    const t = document.getElementById('aiTyping'); if (t) t.remove();
-    box.innerHTML += '<div class="bubble admin">⚠️ Error: ' + e.message + '</div>';
-    box.scrollTop = box.scrollHeight;
-  }
-}
-async function clearAdminAI() {
-  if (!confirm('Clear all Admin AI chat + memory?')) return;
-  try {
-    await fetch(BACKEND_URL + '/admin/ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ clearHistory: true }) });
-    document.getElementById('aiMessages').innerHTML = '<div class="bubble admin" style="background:#fff; color:#1e2a3a; align-self:flex-start; border-bottom-left-radius:4px;">Chat cleared. Fresh start 😊</div>';
-    toast('✅ AI chat cleared');
-  } catch (e) { toast('Failed'); }
-}
-
-// USER DETAIL
+// ============ USER DETAIL (EYE) ============
 function openUserDetail(i) {
   const u = users[i];
   currentUserId = i;
-  const initial = (u.name || u.email).split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
-  const statusLabel = (u.status || 'active').charAt(0).toUpperCase() + (u.status || 'active').slice(1);
-  const plan = u.plan || 'free';
-  const myProducts = products.filter(p => p.seller_email === u.email);
+  const initial = u.name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
+  const statusLabel = u.status.charAt(0).toUpperCase() + u.status.slice(1);
   document.getElementById('userModalContent').innerHTML =
     '<button class="modal-close-x" onclick="closeModal(\'userModal\')"><i class="fas fa-times"></i></button>' +
-    '<div class="user-detail-head"><div class="user-detail-avatar">' + initial + '</div>' +
-    '<h3>' + (u.name || 'User') + ' <span class="badge-plan ' + plan + '">' + plan.toUpperCase() + '</span></h3>' +
-    '<div class="status-pill ' + (u.status || 'active') + '">' + statusLabel + '</div></div>' +
-    '<div class="detail-line"><span class="lbl">Email</span><span class="val">' + (u.email || '—') + '</span></div>' +
+    '<div class="user-detail-head">' +
+      '<div class="user-detail-avatar">' + initial + '</div>' +
+      '<h3>' + u.name + ' <span class="badge-plan ' + u.plan + '">' + u.plan.toUpperCase() + '</span></h3>' +
+      '<div class="status-pill ' + u.status + '">' + statusLabel + '</div>' +
+    '</div>' +
+    '<div class="detail-line"><span class="lbl">Email</span><span class="val">' + u.email + '</span></div>' +
     '<div class="detail-line"><span class="lbl">Phone</span><span class="val">' + (u.phone || '—') + '</span></div>' +
-    '<div class="detail-line"><span class="lbl">Boosts</span><span class="val">' + (u.boosts || 0) + '</span></div>' +
-    '<div class="detail-line"><span class="lbl">Referrals</span><span class="val">' + (u.referrals_count || 0) + '/100</span></div>' +
-    '<div class="detail-line"><span class="lbl">Products</span><span class="val">' + myProducts.length + '</span></div>' +
-    '<div class="detail-line"><span class="lbl">Last active</span><span class="val">' + (u.last_active ? new Date(u.last_active).toLocaleString() : '—') + '</span></div>' +
-    '<button class="btn-big purple" style="margin-top:20px;" onclick="closeModal(\'userModal\'); openUserChat(\'' + u.email + '\')"><i class="fas fa-comment"></i> Message</button>' +
-    '<button class="btn-big green" onclick="closeModal(\'userModal\'); openGift(' + i + ')"><i class="fas fa-gift"></i> Gift</button>' +
+    '<div class="detail-line"><span class="lbl">Boosts</span><span class="val">' + u.boosts + '</span></div>' +
+    '<div class="detail-line"><span class="lbl">Last active</span><span class="val">' + u.lastActive + '</span></div>' +
+    '<div class="detail-section-title">Products (0)</div>' +
+    '<div class="no-products">No products</div>' +
+    '<button class="btn-big green" style="margin-top:20px;" onclick="closeModal(\'userModal\'); openGift(' + i + ')"><i class="fas fa-gift"></i> Gift</button>' +
     '<button class="btn-big red" onclick="closeModal(\'userModal\'); openBan(' + i + ')"><i class="fas fa-ban"></i> Manage</button>';
   openModal('userModal');
 }
 
+// ============ GIFT ============
 function openGift(i) {
   const u = users[i];
   currentUserId = i;
-  giftType = null; giftValue = null;
+  giftType = null;
+  giftValue = null;
   document.getElementById('userModalContent').innerHTML =
     '<button class="modal-close-x" onclick="closeModal(\'userModal\')"><i class="fas fa-times"></i></button>' +
-    '<div class="modal-head"><div class="ico-circle green"><i class="fas fa-gift"></i></div><div class="head-txt"><h3>Gift to ' + (u.name || 'User') + '</h3><p>' + u.email + '</p></div></div>' +
+    '<div class="modal-head">' +
+      '<div class="ico-circle green"><i class="fas fa-gift"></i></div>' +
+      '<div class="head-txt"><h3>Gift to ' + u.name + '</h3><p>' + u.email + '</p></div>' +
+    '</div>' +
     '<div class="modal-label">What to gift?</div>' +
     '<div class="choice-row">' +
       '<div class="choice-card-big" id="gift-boosts-card" onclick="chooseGiftType(\'boosts\')"><i class="fas fa-bolt" style="color:#1e2a3a;"></i><h4>Boosts</h4><p>Add boosts only</p></div>' +
       '<div class="choice-card-big" id="gift-sub-card" onclick="chooseGiftType(\'sub\')"><i class="fas fa-crown" style="color:#8b5cf6;"></i><h4>Plan</h4><p>Plus/Pro/Premium/VIP</p></div>' +
     '</div>' +
-    '<div id="giftOptionsWrap" style="display:none;"><div class="modal-label">Choose pack</div><div class="pack-list" id="packList"></div>' +
-    '<button class="btn-big green" onclick="confirmGift()"><i class="fas fa-check"></i> Confirm Gift</button></div>' +
+    '<div id="giftOptionsWrap" style="display:none;">' +
+      '<div class="modal-label">Choose pack</div>' +
+      '<div class="pack-list" id="packList"></div>' +
+      '<button class="btn-big green" onclick="confirmGift()"><i class="fas fa-check"></i> Confirm Gift</button>' +
+    '</div>' +
     '<button class="btn-big grey" onclick="closeModal(\'userModal\')">Cancel</button>';
   openModal('userModal');
 }
 function chooseGiftType(type) {
-  giftType = type; giftValue = null;
+  giftType = type;
+  giftValue = null;
   document.getElementById('gift-boosts-card').classList.toggle('selected', type === 'boosts');
   document.getElementById('gift-sub-card').classList.toggle('selected', type === 'sub');
-  document.getElementById('giftOptionsWrap').style.display = 'block';
+  const wrap = document.getElementById('giftOptionsWrap');
+  wrap.style.display = 'block';
   const list = document.getElementById('packList');
-  if (type === 'boosts') list.innerHTML = BOOST_PACKS.map(n => '<div class="pack-row" onclick="selectPack(this, ' + n + ')"><span class="pack-name">' + n + ' boosts</span><span class="pack-val">Select</span></div>').join('');
-  else list.innerHTML = SUB_PACKS.map(p => '<div class="pack-row" onclick="selectPack(this, \'' + p.id + '\')"><span class="pack-name">' + p.name + '</span><span class="pack-val">' + p.price + '</span></div>').join('');
+  if (type === 'boosts') {
+    list.innerHTML = BOOST_PACKS.map(n =>
+      '<div class="pack-row" onclick="selectPack(this, ' + n + ')"><span class="pack-name">' + n + ' boosts</span><span class="pack-val">Select</span></div>'
+    ).join('');
+  } else {
+    list.innerHTML = SUB_PACKS.map(p =>
+      '<div class="pack-row" onclick="selectPack(this, \'' + p.id + '\')"><span class="pack-name">' + p.name + '</span><span class="pack-val">' + p.price + '</span></div>'
+    ).join('');
+  }
 }
-function selectPack(el, value) { el.parentElement.querySelectorAll('.pack-row').forEach(r => r.classList.remove('selected')); el.classList.add('selected'); giftValue = value; }
-async function confirmGift() {
+function selectPack(el, value) {
+  el.parentElement.querySelectorAll('.pack-row').forEach(r => r.classList.remove('selected'));
+  el.classList.add('selected');
+  giftValue = value;
+}
+function confirmGift() {
   if (!giftValue) { toast('Select a pack first'); return; }
-     const u = users[currentUserId];
-  try {
-    let res;
-    if (g '<iftType ===p 'boosts') res = await fetch(BACKEND_URL + '/admin/add-boosts', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email, amount: giftValue }) }).then(r => r.json());
-    else res = await fetch(BACKEND_URL + '/admin/gift-plan', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email, plan: giftValue }) }).then(r => r.json());
-    if (res.success) toast('✅ Gifted');
-    else toast('❌ ' + (res.error || 'Failed'));
-    closeModal('userModal'); loadAll();
-  } catch (e) { toast('Network error'); }
+  closeModal('userModal');
+  if (giftType === 'boosts') toast('✅ Gifted ' + giftValue + ' boosts');
+  else toast('✅ Gifted ' + giftValue.toUpperCase() + ' plan');
 }
 
+// ============ BAN ============
 function openBan(i) {
   const u = users[i];
-  currentUserId = i; banAction = null;
-  const showRemove = u.status && u.status !== 'active';
+  currentUserId = i;
+  banAction = null;
+  const showRemove = u.status !== 'active';
   document.getElementById('userModalContent').innerHTML =
     '<button class="modal-close-x" onclick="closeModal(\'userModal\')"><i class="fas fa-times"></i></button>' +
-    '<div class="modal-head"><div class="ico-circle red"><i class="fas fa-ban"></i></div><div class="head-txt"><h3>Manage ' + (u.name || 'User') + '</h3><p>' + u.email + ' · Current: ' + (u.status || 'active') + '</p></div></div>' +
-    '<div class=" stylemodal-label">Choose action</div>' +
+    '<div class="modal-head">' +
+      '<div class="ico-circle red"><i class="fas fa-ban"></i></div>' +
+      '<div class="head-txt"><h3>Manage ' + u.name + '</h3><p>' + u.email + ' · Current: ' + u.status + '</p></div>' +
+    '</div>' +
+    '<div class="modal-label">Choose action</div>' +
     '<div class="choice-row">' +
-      '<div class="choice-card="-big" id="ban-suspend-card" onclick="chooseBanAction(\'suspend\')"><i class="fas fa-clock" stylecolor="color:#f59e0b;"></i><h4>Suspend</h4><p>Temp (days)</p></div>' +
+      '<div class="choice-card-big" id="ban-suspend-card" onclick="chooseBanAction(\'suspend\')"><i class="fas fa-clock" style="color:#f59e0b;"></i><h4>Suspend</h4><p>Temp (days)</p></div>' +
       '<div class="choice-card-big" id="ban-ban-card" onclick="chooseBanAction(\'ban\')"><i class="fas fa-times-circle" style="color:#dc2626;"></i><h4>Ban</h4><p>Permanent</p></div>' +
     '</div>' +
     '<div id="banOptionsWrap" style="display:none;">' +
-      '<div id="daysInputWrap" style="display:none;margin-bottom:14px;"><div class="modal-label">Days to suspend</div><input type="number" id="suspendDays" value="7" style="width:100%;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px;outline:none;font-size:15px;"></div>' +
-      '<button class="btn-big red" id="banConfirmBtn" onclick="confirmBanAction()"><i class="fas fa-ban"></i> Confirm</button></div>' +
-    (showRemove ? '<button class="btn-big green" onclick="removeStatus()"><i class="fas fa-check"></i> Remove Status</button>' : '') +
+      '<div id="daysInputWrap" style="display:none;margin-bottom:14px;">' +
+        '<div class="modal-label">Days to suspend</div>' +
+        '<input type="number" id="suspendDays" value="7" style="width:100%;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px;outline:none;font-size:15px;">' +
+      '</div>' +
+      '<button class="btn-big red" id="banConfirmBtn" onclick="confirmBanAction()"><i class="fas fa-ban"></i> Confirm</button>' +
+    '</div>' +
+    (showRemove ? '<button class="btn-big green" onclick="removeStatus()"><i class="fas fa-check"></i> Remove ' + (u.status === 'banned' ? 'Ban' : 'Suspension') + '</button>' : '') +
     '<button class="btn-big grey" onclick="closeModal(\'userModal\')">Cancel</button>';
   openModal('userModal');
 }
@@ -795,158 +662,135 @@ function chooseBanAction(action) {
   if (action === 'suspend') { btn.className = 'btn-big orange'; btn.innerHTML = '<i class="fas fa-clock"></i> Confirm Suspend'; }
   else { btn.className = 'btn-big red'; btn.innerHTML = '<i class="fas fa-ban"></i> Confirm Ban'; }
 }
-async function confirmBanAction() {
+function confirmBanAction() {
   if (!banAction) { toast('Choose an action'); return; }
   const u = users[currentUserId];
-  const body = banAction === 'suspend' ? { email: u.email, status: 'suspended', days: parseInt(document.getElementById('suspendDays').value) || 7 } : { email: u.email, status: 'banned' };
-  try {
-    const res = await fetch(BACKEND_URL + '/admin/ban-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }).then(r => r.json());
-    if (res.success) toast('✅ Updated');
-    else toast('❌ ' + (res.error || 'Failed'));
-    closeModal('userModal'); loadAll();
-  } catch (e) { toast('Network error'); }
+  if (banAction === 'suspend') {
+    u.status = 'suspended';
+    const days = document.getElementById('suspendDays').value || 7;
+    closeModal('userModal');
+    renderUsers();
+    toast('⏸️ Suspended for ' + days + ' days');
+  } else {
+    u.status = 'banned';
+    closeModal('userModal');
+    renderUsers();
+    toast('⛔ ' + u.name + ' banned');
+  }
 }
-async function removeStatus() {
-  const u = users[currentUserId];
-  await fetch(BACKEND_URL + '/admin/ban-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email, status: 'active' }) });
-  toast('✅ Status removed'); closeModal('userModal'); loadAll();
+function removeStatus() {
+  users[currentUserId].status = 'active';
+  closeModal('userModal');
+  renderUsers();
+  toast('✅ Status removed');
 }
-function openBanByEmail(email) { const idx = users.findIndex(u => u.email === email); if (idx === -1) { toast('User not found'); return; } openBan(idx); }
-function openDeleteByEmail(email) { const idx = users.findIndex(u => u.email === email); if (idx === -1) { toast('User not found'); return; } confirmDeleteUser(idx); }
 
+// ============ DELETE USER ============
 function confirmDeleteUser(i) {
   const u = users[i];
   currentUserId = i;
   document.getElementById('userModalContent').innerHTML =
     '<button class="modal-close-x" onclick="closeModal(\'userModal\')"><i class="fas fa-times"></i></button>' +
-    '<div class="modal-head"><div class="ico-circle red"><i class="fas fa-trash"></i></div><div class="head-txt"><h3>Delete ' + (u.name || 'User') + '?</h3><p>' + u.email + '</p></div></div>' +
+    '<div class="modal-head">' +
+      '<div class="ico-circle red"><i class="fas fa-trash"></i></div>' +
+      '<div class="head-txt"><h3>Delete ' + u.name + '?</h3><p>' + u.email + '</p></div>' +
+    '</div>' +
     '<p style="font-size:14px;color:#64748b;line-height:1.6;margin-bottom:20px;">Moves to Deleted tab. Can be restored.</p>' +
     '<button class="btn-big grey" onclick="closeModal(\'userModal\')">No</button>' +
     '<button class="btn-big red" onclick="doDeleteUser()">Yes, delete</button>';
   openModal('userModal');
 }
-async function doDeleteUser() {
+function doDeleteUser() {
   const u = users[currentUserId];
-  try {
-    const res = await fetch(BACKEND_URL + '/admin/delete-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email }) }).then(r => r.json());
-    if (res.success) toast('🗑️ Moved to Deleted');
-    else toast('❌ ' + (res.error || 'Failed'));
-    closeModal('userModal'); loadAll();
-  } catch (e) { toast('Network error'); }
+  deletedUsers.push({ name: u.name, email: u.email, deletedAt: 'just now' });
+  users.splice(currentUserId, 1);
+  closeModal('userModal');
+  renderUsers(); renderDeleted();
+  toast('🗑️ Moved to Deleted');
 }
 
-async function restoreUser(i) {
+// ============ RESTORE / WIPE ============
+function restoreUser(i) {
   const u = deletedUsers[i];
-  try {
-    const res = await fetch(BACKEND_URL + '/admin/restore-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email }) }).then(r => r.json());
-    if (res.success) toast('✅ Restored');
-    else toast('❌ ' + (res.error || 'Failed'));
-    loadAll();
-  } catch (e) { toast('Network error'); }
+  users.push({ name: u.name, email: u.email, phone: '—', plan: 'free', status: 'active', boosts: 0, lastActive: 'just now' });
+  deletedUsers.splice(i, 1);
+  renderUsers(); renderDeleted();
+  toast('✅ Restored ' + u.name);
 }
 function confirmWipe(i) {
   currentUserId = i;
   const u = deletedUsers[i];
   document.getElementById('userModalContent').innerHTML =
     '<button class="modal-close-x" onclick="closeModal(\'userModal\')"><i class="fas fa-times"></i></button>' +
-    '<div class="modal-head"><div class="ico-circle red"><i class="fas fa-exclamation-triangle"></i></div><div class="head-txt"><h3>Wipe ' + (u.name || 'User') + '?</h3><p>' + u.email + '</p></div></div>' +
-    '<p style="color:#b91c1c;font-weight:700;margin-bottom:20px;">⚠️ Removes from Supabase, app, admin panel FOREVER. Cannot be undone.</p>' +
+    '<div class="modal-head">' +
+      '<div class="ico-circle red"><i class="fas fa-exclamation-triangle"></i></div>' +
+      '<div class="head-txt"><h3>Wipe ' + u.name + '?</h3><p>' + u.email + '</p></div>' +
+    '</div>' +
+    '<p style="color:#b91c1c;font-weight:700;margin-bottom:20px;">⚠️ This deletes them from Supabase, app, and admin panel FOREVER. Cannot be undone.</p>' +
     '<button class="btn-big grey" onclick="closeModal(\'userModal\')">No</button>' +
     '<button class="btn-big red" onclick="doWipe()">YES, WIPE FOREVER</button>';
   openModal('userModal');
 }
-async function doWipe() {
-  const u = deletedUsers[currentUserId];
-  try {
-    const res = await fetch(BACKEND_URL + '/admin/permanent-delete-user', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: u.email }) }).then(r => r.json());
-    if (res.success) toast('💀 Wiped forever');
-    closeModal('userModal'); loadAll();
-  } catch (e) { toast('Network error'); }
+function doWipe() {
+  deletedUsers.splice(currentUserId, 1);
+  closeModal('userModal');
+  renderDeleted();
+  toast('💀 Wiped forever');
 }
 
-function confirmDeleteProduct(id) {
-  document.getElementById('userModalContent').innerHTML =
-    '<button class="modal-close-x" onclick="closeModal(\'userModal\')"><i class="fas fa-times"></i></button>' +
-    '<div class="modal-head"><div class="ico-circle red"><i class="fas fa-trash"></i></div><div class="head-txt"><h3>Delete product?</h3><p>ID: ' + id + '</p></div></div>' +
-:#b91c1c;font-weight:700;margin-bottom:20px;">⚠️ Removes from Supabase forever.</p>' +
-    '<button class="btn-big grey" onclick="closeModal(\'userModal\')">No</button>' +
-    '<button class="btn-big red" onclick="doDeleteProduct(' + id + ')">Yes, delete</button>';
-  openModal('userModal');
-}
-async function doDeleteProduct(id) {
-  try {
-    await fetch(BACKEND_URL + '/admin/delete-product', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) });
-    toast('🗑️ Product deleted');
-    closeModal('userModal'); loadAll();
-  } catch (e) { toast('Network error'); }
-}
-
-// ===== USER CHAT =====
-async function openUserChat(email) {
-  currentUserEmail = email;
-  const user = users.find(u => u.email === email);
-  currentUserName = user ? (user.name || email) : email;
-  document.getElementById('adminContainer').style.display = 'none';
+// ============ CHAT ============
+function openChat(name, email, initial) {
+  if (deleteMode.dms) return;
+  document.getElementById('mainContainer').style.display = 'none';
   document.getElementById('broadcastPage').classList.remove('active');
   document.getElementById('chatPage').classList.add('active');
-  document.getElementById('chatName').textContent = currentUserName;
-  document.getElementById('chatAvatar').textContent = currentUserName.charAt(0).toUpperCase();
+  document.getElementById('chatName').textContent = name;
+  document.getElementById('chatAvatar').textContent = initial;
   document.getElementById('chatStatus').textContent = email;
-  document.getElementById('chatInput').placeholder = 'Reply to ' + currentUserName + '...';
-  await loadChat(email);
-  if (chatPollRef) clearInterval(chatPollRef);
-  chatPollRef = setInterval(() => { if (currentUserEmail) loadChat(currentUserEmail); }, 4000);
+  document.getElementById('chatInput').placeholder = 'Reply to ' + name + '...';
+  const msgs = document.getElementById('chatMessages');
+  msgs.innerHTML = '';
+  const thread = name === 'Dave' ? daveChat : amaChat;
+  thread.forEach(m => {
+    const b = document.createElement('div');
+    b.className = 'bubble ' + m.side;
+    b.innerHTML = m.text.replace(/</g,'&lt;') + '<div class="bubble-time">' + m.time + '</div>';
+    msgs.appendChild(b);
+  });
+  msgs.scrollTop = msgs.scrollHeight;
 }
-async function loadChat(email) {
-  try {
-    const msgs = await fetch(BACKEND_URL + '/dm/' + encodeURIComponent(email)).then(r => r.json());
-    const box = document.getElementById('chatMessages');
-    if (!msgs || !msgs.length) { box.innerHTML = '<div class="empty" style="color:#94a3b8;">No messages yet. Send the first one!</div>'; return; }
-    const html = msgs.map(m => {
-      const dt = m.created_at ? new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-      const side = (m.sender || '').toLowerCase() === 'admin' ? 'admin' : 'user';
-      return '<div class="bubble ' + side + '">' + (m.body || '').replace(/</g, '&lt;') + '<div class="bubble-time">' + dt + '</div></div>';
-    }).join('');
-    if (box.innerHTML !== html) {
-      box.innerHTML = html;
-      box.scrollTop = box.scrollHeight;
-    }
-  } catch (e) {}
+function closeChat() {
+  document.getElementById('chatPage').classList.remove('active');
+  document.getElementById('mainContainer').style.display = 'block';
 }
-async function sendMsg() {
+function sendMsg() {
   const input = document.getElementById('chatInput');
   const text = input.value.trim();
   if (!text) return;
-  const box = document.getElementById('chatMessages');
-  if (box.querySelector('.empty')) box.innerHTML = '';
+  const msgs = document.getElementById('chatMessages');
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble admin';
   const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  box.innerHTML += '<div class="bubble admin">' + text.replace(/</g, '&lt;') + '<div class="bubble-time">' + now + '</div></div>';
-  box.scrollTop = box.scrollHeight;
+  bubble.innerHTML = text.replace(/</g,'&lt;') + '<div class="bubble-time">' + now + '</div>';
+  msgs.appendChild(bubble);
   input.value = '';
-  try {
-    await fetch(BACKEND_URL + '/dm/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ user_email: currentUserEmail, sender: 'admin', body: text }) });
-    loadAll();
-    setTimeout(() => loadChat(currentUserEmail), 300);
-  } catch (e) { toast('Failed to send'); }
-}
-function closeChat() {
-  if (chatPollRef) { clearInterval(chatPollRef); chatPollRef = null; }
-  currentUserEmail = null;
-  document.getElementById('chatPage').classList.remove('active');
-  document.getElementById('adminContainer').style.display = 'block';
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
-// ===== BROADCAST =====
+// ============ BROADCAST ============
 function openBroadcast() {
-  document.getElementById('adminContainer').style.display = 'none';
+  document.getElementById('mainContainer').style.display = 'none';
   document.getElementById('chatPage').classList.remove('active');
   document.getElementById('broadcastPage').classList.add('active');
   currentBroadcastTitle = '';
   document.getElementById('broadcastTitle').innerHTML = 'Broadcast to ALL Users <i class="fas fa-pencil-alt" style="font-size:12px;color:#3b82f6;margin-left:6px;cursor:pointer;" onclick="editBroadcastTitle()"></i>';
-  document.getElementById('broadcastMessages').innerHTML = '<div class="empty" style="color:#94a3b8;">Type a message below → Send → it goes to all users 📢</div>';
+  document.getElementById('broadcastMessages').innerHTML = '<div class="empty-note">Type a message below → Send → it goes to all users 📢</div>';
   document.getElementById('broadcastInput').placeholder = 'Write your broadcast...';
 }
-function editBroadcastTitle() { document.getElementById('titleInput').value = currentBroadcastTitle || ''; openModal('titleModal'); }
+function editBroadcastTitle() {
+  document.getElementById('titleInput').value = currentBroadcastTitle || '';
+  openModal('titleModal');
+}
 function saveTitle() {
   const t = document.getElementById('titleInput').value.trim();
   currentBroadcastTitle = t;
@@ -956,39 +800,39 @@ function saveTitle() {
 }
 function closeBroadcast() {
   document.getElementById('broadcastPage').classList.remove('active');
-  document.getElementById('adminContainer').style.display = 'block';
+  document.getElementById('mainContainer').style.display = 'block';
 }
-async function sendBroadcast() {
+function sendBroadcast() {
   const input = document.getElementById('broadcastInput');
   const text = input.value.trim();
   if (!text) return;
-  const title = currentBroadcastTitle || 'Broadcast';
   const msgs = document.getElementById('broadcastMessages');
-  if (msgs.querySelector('.empty')) msgs.innerHTML = '';
+  if (msgs.querySelector('.empty-note')) msgs.innerHTML = '';
   const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  msgs.innerHTML += '<div class="bubble admin" style="background:#3b82f6;color:#fff;">📢 ' + text.replace(/</g, '&lt;') + '<div class="bubble-time">Sent · ' + now + '</div></div>';
-  msgs.scrollTop = msgs.scrollHeight;
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble admin';
+  bubble.style.background = '#3b82f6'; bubble.style.color = '#fff';
+  bubble.innerHTML = '📢 ' + text.replace(/</g,'&lt;') + '<div class="bubble-time">Sent to all · ' + now + '</div>';
+  msgs.appendChild(bubble);
   input.value = '';
-  try {
-    const res = await fetch(BACKEND_URL + '/admin/send-broadcast', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title, body: text }) }).then(r => r.json());
-    if (res.success) toast('📢 Broadcast sent to all users');
-    else toast('❌ ' + (res.error || 'Failed'));
-    currentBroadcastTitle = '';
-    await loadAll();
-  } catch (e) { toast('Failed to send'); }
+  msgs.scrollTop = msgs.scrollHeight;
+  broadcasts.unshift({ title: currentBroadcastTitle || 'Broadcast', body: text, time: 'Just now' });
+  renderInbox();
+  currentBroadcastTitle = '';
+  toast('📢 Broadcast sent');
 }
-function openBroadcastView(id) {
-  const b = broadcasts.find(x => x.id == id);
-  if (!b) return;
-  document.getElementById('adminContainer').style.display = 'none';
+function openBroadcastView(i) {
+  const b = broadcasts[i];
+  document.getElementById('mainContainer').style.display = 'none';
   document.getElementById('chatPage').classList.remove('active');
   document.getElementById('broadcastPage').classList.add('active');
   currentBroadcastTitle = b.title;
   document.getElementById('broadcastTitle').innerHTML = b.title + ' <i class="fas fa-pencil-alt" style="font-size:12px;color:#3b82f6;margin-left:6px;cursor:pointer;" onclick="editBroadcastTitle()"></i>';
-  document.getElementById('broadcastMessages').innerHTML = '<div class="bubble admin" style="max-width:90%;background:#3b82f6;color:#fff;align-self: flex-start;border-bottom-left-radius:4px;">📢 ' + (b.body || '').replace(/</g, '&lt;') + '<div class="bubble-time">' + (b.created_at ? new Date(b.created_at).toLocaleString() : '') + '</div></div>';
+  document.getElementById('broadcastMessages').innerHTML =
+    '<div class="bubble admin" style="max-width:90%;background:#3b82f6;color:#fff;align-self:flex-start;border-bottom-left-radius:4px;">📢 ' + b.body.replace(/</g,'&lt;') + '<div class="bubble-time">' + b.time + '</div></div>';
 }
 
-// ===== DELETE MODE =====
+// ============ DELETE MODE ============
 function toggleDeleteMode(which) {
   deleteMode[which] = !deleteMode[which];
   const list = document.getElementById(which === 'dms' ? 'dmsList' : 'inboxList');
@@ -1003,65 +847,41 @@ function cancelDelete(which) {
   if (list) list.classList.remove('deleting');
   if (bar) bar.classList.remove('show');
   document.querySelectorAll('.dm-check').forEach(c => c.classList.remove('selected'));
-  pendingDeleteIds[which === 'dms' ? 'dms' : 'inbox'] = [];
 }
-function toggleCheck(el, which, id) {
-  el.classList.toggle('selected');
-  const key = which === 'dm' ? 'dms' : 'inbox';
-  if ( tryel.classList.contains('selected')) { if (!pendingDeleteIds[key].includes(id)) pendingDeleteIds[key].push(id); }
-  else {
- { pendingDeleteIds[key] = pendingDeleteIds[key].filter(x => x !== id); }
-}
-async function deleteSelected(which)    {
-  const key = which === 'dms' ? 'dms' : 'inbox';
-  if (!pendingDeleteIds[key await].length) { toast('Select messages first'); return; }
-  try {
-    if (key === 'inbox fetch') {
-      for (const id of pendingDeleteIds[key]) {
-        await fetch(BACKEND_URL + '/admin/delete-broadcast', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: id }) });
-      }
-    } else {
-      for (const email of pendingDeleteIds[key]) {
-        const msgs = await fetch(BACKEND_URL + '/dm/' + encodeURIComponent(email)).then(r => r.json());
-        for (const m of (msgs || [])) {
-          await fetch(BACKEND_URL + '/admin/delete-dm', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: m.id }) });
-        }
-      }
-    }
-    toast('🗑️ Deleted');
-    cancelDelete(which);
-    loadAll();
-  } catch (e) { toast('Failed'); }
+function toggleCheck(el) { el.classList.toggle('selected'); }
+function deleteSelected(which) {
+  const checks = document.querySelectorAll('#' + (which === 'dms' ? 'dmsList' : 'inboxList') + ' .dm-check.selected');
+  if (!checks.length) { toast('Select messages first'); return; }
+  const count = checks.length;
+  checks.forEach(c => c.closest('.dm-row').remove());
+  cancelDelete(which);
+  if (which === 'inbox') {
+    broadcasts = broadcasts.slice(0, broadcasts.length - count);
+    document.getElementById('inboxCount').textContent = broadcasts.length;
+  }
+  toast('🗑️ Deleted ' + count + ' forever');
 }
 
-// ===== SETTINGS =====
-function openChangePassword() { openModal('pwModal'); }
-function saveNewPassword() {
-  const c = document.getElementById('cpCurrent').value;
-  const n = document.getElementById('cpNew').value;
-  const cf = document.getElementById('cpConfirm').value;
-  if (c !== ADMIN_PASSWORD) { toast('Current password wrong'); return; }
-  if (!n || n.length < 6) { toast('Password must be 6+ chars'); return; }
-  if (n !== cf) { toast('Passwords do not match'); return; }
-  ADMIN_PASSWORD = n;
-  localStorage.setItem('lenidi_admin_pw', n);
-  toast('✅ Password updated');
-  closeModal('pwModal');
-  setTimeout(() => doLogout(), 1200);
-}
-function confirmClearData() { openModal('clearModal'); }
-async function doClearData() {
-(BACKEND_URL + '/admin/clear-data', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
-    toast('🗑️ Cleared');
-    closeModal('clearModal');
-    loadAll();
-  } catch (e) { toast('Failed'); }
+// ============ AI ============
+function sendAI() {
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if (!text) return;
+  const msgs = document.getElementById('aiMessages');
+  msgs.innerHTML += '<div class="bubble admin" style="background:#1e2a3a;color:#fff;align-self:flex-end;">' + text.replace(/</g,'&lt;') + '</div>';
+  input.value = '';
+  setTimeout(() => {
+    msgs.innerHTML += '<div class="bubble admin" style="background:#fff;color:#1e2a3a;align-self:flex-start;border-bottom-left-radius:4px;">⚙️ ' + text.replace(/</g,'&lt;') + '</div>';
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 500);
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
+// ============ MODALS ============
 function openModal(id) { document.getElementById(id).classList.add('show'); }
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); }));
-function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200); }
+function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
 document.addEventListener('click', (e) => { if (!e.target.closest('.dots-btn') && !e.target.closest('.dots-menu')) closeMenus(); });
 </script>
 </body>
